@@ -3,40 +3,38 @@ from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.metrics import AUC, FalseNegatives, FalsePositives, TruePositives, TrueNegatives
 import tensorflow as tf
 
+"""
+Architecture of deep learning models used for categorisation. 
 
-# def Sensitivity(y_true, y_pred):
-#     true_positives = tf.keras.backend.sum(tf.keras.backend.round(tf.keras.backend.clip(y_true * y_pred, 0, 1)))
-#     possible_positives = tf.keras.backend.sum(tf.keras.backend.round(tf.keras.backend.clip(y_true, 0, 1)))
-#     return true_positives / (possible_positives + tf.keras.backend.epsilon())
+Might find definitions of:
+    - CNN
+    - Pooling layers
+    - Fully connecting layers
+    - any custom activation or loss functions
 
-
-# def Specificity(y_true, y_pred):
-#     true_negatives = tf.keras.backend.sum(
-#         tf.keras.backend.round(tf.keras.backend.clip((1 - y_true) * (1 - y_pred), 0, 1)))
-#     possible_negatives = tf.keras.backend.sum(tf.keras.backend.round(tf.keras.backend.clip(1 - y_true, 0, 1)))
-#     return true_negatives / (possible_negatives + tf.keras.backend.epsilon())
+Central for constructing the model that is later trained in cross-validation script
+"""
 
 def Sensitivity(y_true, y_pred):
-    y_true = tf.cast(y_true, tf.float32)  # Ensure consistent types
-    y_pred = tf.cast(y_pred, tf.float32)  # Ensure consistent types
+    # Cast both y_true and y_pred to float32
+    y_true = tf.cast(y_true, tf.float32)
+    y_pred = tf.cast(y_pred, tf.float32)
     
     true_positives = tf.keras.backend.sum(tf.keras.backend.round(tf.keras.backend.clip(y_true * y_pred, 0, 1)))
     possible_positives = tf.keras.backend.sum(tf.keras.backend.round(tf.keras.backend.clip(y_true, 0, 1)))
-    
     return true_positives / (possible_positives + tf.keras.backend.epsilon())
 
 
-
 def Specificity(y_true, y_pred):
-    y_true = tf.cast(y_true, tf.float32)  # Ensure y_true is float32
-    y_pred = tf.cast(y_pred, tf.float32)  # Ensure y_pred is float32
-    
+    # Cast both y_true and y_pred to float32
+    y_true = tf.cast(y_true, tf.float32)
+    y_pred = tf.cast(y_pred, tf.float32)
+
     true_negatives = tf.keras.backend.sum(
         tf.keras.backend.round(tf.keras.backend.clip((1 - y_true) * (1 - y_pred), 0, 1)))
-    possible_negatives = tf.keras.backend.sum(
-        tf.keras.backend.round(tf.keras.backend.clip(1 - y_true, 0, 1)))
-    
-    return true_negatives / (possible_negatives + tf.keras.backend.epsilon())  # Avoid division by zero
+    possible_negatives = tf.keras.backend.sum(tf.keras.backend.round(tf.keras.backend.clip(1 - y_true, 0, 1)))
+    return true_negatives / (possible_negatives + tf.keras.backend.epsilon())
+
 
 def F1_metric(y_true, y_pred):
     sens = Sensitivity(y_true, y_pred)

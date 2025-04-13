@@ -10,6 +10,11 @@ from categorization.models import *
 from categorization.plot_utils import *
 from categorization.data_utils import *
 
+"""
+Similar to plot_utils.py
+Provides functions to visualise results. Generate plots for training and validation loss curves, accuracy graphs, and possibly confusion matrices. 
+"""
+
 if __name__ == "__main__":
 
     # use argument stacked if you only plot the stacked graphs

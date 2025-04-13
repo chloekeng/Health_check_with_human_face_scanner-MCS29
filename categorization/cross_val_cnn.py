@@ -9,9 +9,18 @@ from sklearn.model_selection import StratifiedKFold
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 
 sys.path.append(os.getcwd())
-from categorization.models import make_model
+from categorization.models_ori import make_model
 from categorization.plot_utils import *
 from categorization.data_utils import *
+
+"""
+Built to run cross-validation experiments using CNN. It typically 
+    1. loads the dataset (assuming to have been pre-processed already)
+    2. Splits data into folds
+    3. Train the CNN on each fold
+    4. Compute performance metrics
+Focus: Evaluate how well a CNN model generalizes to unseen data.
+"""
 
 if __name__ == "__main__":
 
@@ -27,7 +36,8 @@ if __name__ == "__main__":
     image_size = 128
     folds = 10
 
-    skfold = StratifiedKFold(n_splits=folds, shuffle=False, random_state=1)
+    skfold = StratifiedKFold(n_splits=folds, shuffle=False)
+    # skfold = StratifiedKFold(n_splits=folds, shuffle=False, random_state=1)
 
     for feature in face_features:
         auc_sum = 0
@@ -64,6 +74,8 @@ if __name__ == "__main__":
                 # print(save)
                 if str(fold_no) + '.h5' in save:
                     best_model_path = save_path + str(feature) + "/" + save
+
+            best_model_path = "path/to/your/best_model.h5"
 
             saved_model = tf.keras.models.load_model(best_model_path, compile=False)
             del model

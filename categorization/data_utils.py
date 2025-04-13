@@ -3,6 +3,11 @@ import cv2
 import numpy as np
 import pickle
 
+"""
+contains utility functions for data handling.
+
+Common tasks include: loading image from disk, preprocessing them, and splitting dataset into training, validation, and test sets. 
+"""
 
 def load_data(folder_sick, folder_healthy, image_size, ftype, extra_healthy=None, extra_sick=None):
     files_healthy = os.listdir(folder_healthy)
