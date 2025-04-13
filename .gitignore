@@ -1,27 +1,27 @@
 data/*
-!data/.gitkeep
+# !data/.gitkeep
 
-!data/parsed
-data/parsed/healthy/*
-!data/parsed/healthy/.gitkeep
-data/parsed/sick/*
-!data/parsed/sick/.gitkeep
+# !data/parsed
+# data/parsed/healthy/*
+# !data/parsed/healthy/.gitkeep
+# data/parsed/sick/*
+# !data/parsed/sick/.gitkeep
 
-!data/unparsed
-data/unparsed/rug_healthy/*
-!data/unparsed/rug_healthy/.gitkeep
-data/unparsed/rug_sick/*
-!data/unparsed/rug_sick/.gitkeep
+# !data/unparsed
+# data/unparsed/rug_healthy/*
+# !data/unparsed/rug_healthy/.gitkeep
+# data/unparsed/rug_sick/*
+# !data/unparsed/rug_sick/.gitkeep
 
-data/extracted
+# data/extracted
 
-!data/plots
-data/plots/*
-!data/plots/.gitkeep
+# !data/plots
+# data/plots/*
+# !data/plots/.gitkeep
 
-!data/convertppm.py
-!data/delete.py
-!data/extract.py
+# !data/convertppm.py
+# !data/delete.py
+# !data/extract.py
 
 *.zip
 
