@@ -20,7 +20,7 @@ if __name__ == "__main__":
     image_folder_val_healthy = 'data/parsed/validation_healthy'
 
     save_path = 'categorization/model_saves/'
-    face_features = ["mouth", "nose", "skin", "eye"]
+    face_features = ["mouth", "nose", "skin", "left_eye", "right_eye"]
 
     base_fpr = np.linspace(0, 1, 101)
     image_size = 128
@@ -59,9 +59,9 @@ if __name__ == "__main__":
         print("Starting training...")
 
         history = stacked.fit(
-            x=[images[0, train], images[1, train], images[2, train], images[3, train]],
+            x=[images[0, train], images[1, train], images[2, train], images[3, train], images[4, train]],
             y=labels[train], epochs=50, batch_size=4, callbacks=[early_stopping, model_check],
-            validation_data=([images[0, test], images[1, test], images[2, test], images[3, test]], labels[test]))
+            validation_data=([images[0, test], images[1, test], images[2, test], images[3, test], images[4, test]], labels[test]))
 
         save_history(save_path, history, "stacked", fold_no)
 
@@ -71,7 +71,7 @@ if __name__ == "__main__":
             save_path + 'stacked/model_' + str(fold_no) + '.h5', compile=False)
 
         pred = stacked.predict(
-            [val_images[0], val_images[1], val_images[2], val_images[3]])
+            [val_images[0], val_images[1], val_images[2], val_images[3], val_images[4]])
 
         if fold_no == 1:
             predictions = to_labels(pred)
