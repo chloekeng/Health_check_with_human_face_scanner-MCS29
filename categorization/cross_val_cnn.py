@@ -9,23 +9,17 @@ from sklearn.model_selection import StratifiedKFold
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 
 sys.path.append(os.getcwd())
-from categorization.models_ori import make_model
+from categorization.models import make_model
 from categorization.plot_utils import *
 from categorization.data_utils import *
 
-"""
-Built to run cross-validation experiments using CNN. It typically 
-    1. loads the dataset (assuming to have been pre-processed already)
-    2. Splits data into folds
-    3. Train the CNN on each fold
-    4. Compute performance metrics
-Focus: Evaluate how well a CNN model generalizes to unseen data.
-"""
-
 if __name__ == "__main__":
 
+    # training set: used to train the model
     image_folder_training_sick = 'data/parsed/training_sick'
     image_folder_training_healthy = 'data/parsed/training_healthy'
+    # validation set: used to validate the model during training. NO LEARNING.
+    # checks how wel model is performing on unseen images. detect overfitting
     image_folder_val_sick = 'data/parsed/validation_sick'
     image_folder_val_healthy = 'data/parsed/validation_healthy'
 
@@ -36,8 +30,7 @@ if __name__ == "__main__":
     image_size = 128
     folds = 10
 
-    skfold = StratifiedKFold(n_splits=folds, shuffle=False)
-    # skfold = StratifiedKFold(n_splits=folds, shuffle=False, random_state=1)
+    skfold = StratifiedKFold(n_splits=folds, shuffle=True, random_state=1)
 
     for feature in face_features:
         auc_sum = 0
@@ -45,13 +38,18 @@ if __name__ == "__main__":
         fold_no = 1
 
         print("[INFO] Training %s" % (feature))
-
+        
         val_images, val_labels = load_shuffled_data(
             image_folder_val_sick, image_folder_val_healthy, image_size, feature)
         images, labels = load_shuffled_data(
             image_folder_training_sick, image_folder_training_healthy, image_size, feature)
 
         plt.figure()
+
+        # Ensure save directory exists (NEW FIX)
+        if not os.path.exists(save_path + str(feature)):
+            os.makedirs(save_path + str(feature))
+        
 
         for train, test in skfold.split(images, labels):
 
@@ -60,6 +58,12 @@ if __name__ == "__main__":
 
             early_stopping = EarlyStopping(
                 monitor='val_F1_metric', mode='max', patience=10, verbose=1)
+            # Original line:
+            # model_check = ModelCheckpoint(
+            #     save_path + str(feature) + '/model_' + str(fold_no) + '.h5', monitor='val_F1_metric', mode='max',
+            #     verbose=1, save_best_only=True)
+            
+            # Modified: Always save the model, not just the best one (FIX)
             model_check = ModelCheckpoint(
                 save_path + str(feature) + '/model_' + str(fold_no) + '.h5', monitor='val_F1_metric', mode='max',
                 verbose=1, save_best_only=True)
@@ -70,12 +74,17 @@ if __name__ == "__main__":
             save_history(save_path, history, feature, fold_no)
 
             all_saves = os.listdir(save_path + str(feature))
+            best_model_path = None  # Ensure the variable is defined
+            
             for save in all_saves:
-                # print(save)
                 if str(fold_no) + '.h5' in save:
                     best_model_path = save_path + str(feature) + "/" + save
 
-            best_model_path = "path/to/your/best_model.h5"
+            # If no saved model exists, save the current one (FIX)
+            if best_model_path is None:
+                print(f"No saved model found for {feature}, training a new model from scratch...")
+                best_model_path = save_path + str(feature) + f"/model_{fold_no}.h5"
+                model.save(best_model_path)  # Save the trained model
 
             saved_model = tf.keras.models.load_model(best_model_path, compile=False)
             del model
@@ -100,3 +109,82 @@ if __name__ == "__main__":
 
         print_roc_curve(tprs, auc_sum, feature, folds)
         print_confusion_matrix(predictions, val_labels, feature, folds)
+
+
+# if __name__ == "__main__":
+
+#     image_folder_training_sick = 'data/parsed/training_sick'
+#     image_folder_training_healthy = 'data/parsed/training_healthy'
+#     image_folder_val_sick = 'data/parsed/validation_sick'
+#     image_folder_val_healthy = 'data/parsed/validation_healthy'
+
+#     save_path = 'categorization/model_saves/'
+#     face_features = ["mouth", "nose", "skin", "eye"]
+
+#     base_fpr = np.linspace(0, 1, 101)
+#     image_size = 128
+#     folds = 10
+
+#     skfold = StratifiedKFold(n_splits=folds, shuffle=True, random_state=1)
+
+#     for feature in face_features:
+#         auc_sum = 0
+#         tprs = []
+#         fold_no = 1
+
+#         print("[INFO] Training %s" % (feature))
+
+#         val_images, val_labels = load_shuffled_data(
+#             image_folder_val_sick, image_folder_val_healthy, image_size, feature)
+#         images, labels = load_shuffled_data(
+#             image_folder_training_sick, image_folder_training_healthy, image_size, feature)
+
+#         plt.figure()
+
+#         for train, test in skfold.split(images, labels):
+
+#             tf.keras.backend.clear_session()
+#             model = make_model(image_size, feature)
+
+#             early_stopping = EarlyStopping(
+#                 monitor='val_F1_metric', mode='max', patience=10, verbose=1)
+#             model_check = ModelCheckpoint(
+#                 save_path + str(feature) + '/model_' + str(fold_no) + '.h5', monitor='val_F1_metric', mode='max',
+#                 verbose=1, save_best_only=True)
+
+#             history = model.fit(images[train], labels[train], epochs=50, batch_size=4,
+#                                 callbacks=[early_stopping, model_check], validation_data=(images[test], labels[test]))
+
+#             save_history(save_path, history, feature, fold_no)
+
+#             all_saves = os.listdir(save_path + str(feature))
+#             for save in all_saves:
+#                 # print(save)
+#                 if str(fold_no) + '.h5' in save:
+#                     best_model_path = save_path + str(feature) + "/" + save
+
+#             saved_model = tf.keras.models.load_model(best_model_path, compile=False)
+#             del model
+
+#             if fold_no == 1:
+#                 predictions = to_labels(saved_model.predict(val_images))
+#             else:
+#                 predictions = np.concatenate(
+#                     (predictions, to_labels(saved_model.predict(val_images))), axis=0)
+
+#             fold_no += 1
+
+#             pred = (saved_model.predict(val_images))
+#             fpr, tpr, _ = roc_curve(val_labels, pred)
+#             auc_sum += auc(fpr, tpr)
+#             del saved_model
+
+#             plt.plot(fpr, tpr, 'b', alpha=0.15)
+#             tpr = interp(base_fpr, fpr, tpr)
+#             tpr[0] = 0.0
+#             tprs.append(tpr)
+
+#         print_roc_curve(tprs, auc_sum, feature, folds)
+#         print_confusion_matrix(predictions, val_labels, feature, folds)
+
+

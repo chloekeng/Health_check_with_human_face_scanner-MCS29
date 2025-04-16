@@ -1,4 +1,25 @@
 data/*
+
+# Ignore all virtual environments
+venv/
+venv310/
+.venv/
+env/
+
+# Ignore VS Code settings
+.vscode/
+
+# Bytecode and cache files
+__pycache__/
+*.pyc
+*.pyo
+
+# Ignore data or model files (optional)
+*.h5
+*.pkl
+*.ckpt
+
+data/parsed/*.zip
 # !data/.gitkeep
 
 # !data/parsed

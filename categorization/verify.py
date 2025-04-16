@@ -12,11 +12,6 @@ sys.path.append(os.getcwd())
 from categorization.data_utils import load_data
 from categorization.models import *
 
-"""
-Verify or test a trained model on new/held-out data. It might load a saved model and run it on a set of images to produce predictions.  
-This verification step is important to ensure that the model behaves as expected when faced with data that was not seen during training.
-"""
-
 def get_accuracy(test_labels, prediction_labels, thresh=0.5):
     sum_acc = 0.0
     for i in range(len(test_labels)):

@@ -8,14 +8,9 @@ from sklearn.model_selection import StratifiedKFold
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 
 sys.path.append(os.getcwd())
-from categorization.models_ori import *
+from categorization.models import *
 from categorization.plot_utils import *
 from categorization.data_utils import *
-
-"""
-Similarly to cross_val_cnn.py, this file instead runs cross-validation on "stacked" model. A stacked model might combine the ouput of several different classifier 
-(or several runs of CNN) in order to boost overall performance. It automates the process of training, validating, and comparing these models.
-"""
 
 if __name__ == "__main__":
 
