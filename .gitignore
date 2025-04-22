@@ -40,3 +40,5 @@ categorization/model_saves/*
 *.png
 
 !documentation/*
+
+venv310

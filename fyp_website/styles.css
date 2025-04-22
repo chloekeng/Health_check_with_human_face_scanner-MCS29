@@ -69,6 +69,15 @@ button {
     align-items: flex-start; */
 }
 
+.box img {
+    max-width: 100%;     /* Shrinks image if too wide */
+    max-height: 100%;    /* Shrinks image to fit box height */
+    object-fit: contain; /* Keeps image proportions */
+    border-radius: 50%;  /* Makes the image oval/circle if it's square */
+    display: block;
+    margin: 0 auto;
+}
+
 .box-title {
     /* margin-bottom: 10px; */
     display: flex;
@@ -105,8 +114,64 @@ button {
     color: black;
 }
 
-.face-scan-container {
-    width: 300px;
+.face-scan-container{
+    margin: 2% auto;
+    display: flex;
+    max-width: 60%;
+    max-height: 550px;
     background-color: lightgray;
-
+    text-align: center;
+    border-radius: 20px;
 }
+
+/* Flexbox to arrange steps in a row */
+.oval-container {
+    margin: 4%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+}
+
+.oval-container img{
+    display: block; 
+    /* width: 200px; */
+    object-fit: contain;
+    max-height: 100%;
+}
+
+.overlay-text {
+    position: absolute;
+    color: white;
+    /* font-weight: bold; */
+    /* font-size: 1rem; */
+    text-align: center;
+}
+
+.camera-button {
+    /* border: none; */
+    display: flex;
+    background-color: lightgray;
+    justify-content: center;
+    align-items: center;
+    margin: 20px auto;
+    padding: 1%;
+    border-radius: 50%;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.camera-button img {
+    width: 50px; /* Adjust icon size */
+    height: 50px;
+}
+
+.here-link {
+    color: blue;
+    text-decoration: underline;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font: inherit;
+}
+
