@@ -1,0 +1,19 @@
+Documentation to track how many and which set of faces have been trained/validated on.
+
+Run 1: 
+Training Set:
+- Healthy: 30 
+- Sick 10
+
+Validation Set:
+- Healthy: 4
+- Sick: 4
+
+Run 2
+Training Set:
+- Healthy: 56 
+- Sick 36 
+
+Validation Set:
+- Healthy: 4
+- Sick: 4

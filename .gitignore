@@ -1,42 +1,42 @@
+# Ignore all files under data
 data/*
+
+# Re-allow folder structure and specific scripts
 !data/.gitkeep
-
-!data/parsed
-data/parsed/healthy/*
-!data/parsed/healthy/.gitkeep
-data/parsed/sick/*
-!data/parsed/sick/.gitkeep
-
-!data/unparsed
-data/unparsed/rug_healthy/*
-!data/unparsed/rug_healthy/.gitkeep
-data/unparsed/rug_sick/*
-!data/unparsed/rug_sick/.gitkeep
-
-data/extracted
-
-!data/plots
-data/plots/*
-!data/plots/.gitkeep
-
+!data/parsed/
+!data/unparsed/
+!data/plots/
 !data/convertppm.py
 !data/delete.py
 !data/extract.py
 
-*.zip
+# Keep .gitkeep files in parsed and unparsed, ignore everything else
+data/parsed/**/*
+!data/parsed/**/.gitkeep
+data/unparsed/**/*
+!data/unparsed/**/.gitkeep
 
-augment/output/checkpoints/*
+# Exclude extracted folder completely
+data/extracted/
 
-categorization/model_saves/*
-categorization/model_saves/*
-*/__pycache__/*
-
-
-.vscode
-
-*.pub
-
+# Ignore all images by default
 *.jpg
 *.png
 
+# But allow images specifically in plots and subfolders
+!data/plots/**/*.jpg
+!data/plots/**/*.png
+!data/plots/**/.gitkeep
+# ----------------------------------------
+
+# Checkpoints and model outputs
+augment/output/checkpoints/*
+categorization/model_saves/*
+
+# Cache and IDE settings
+*/__pycache__/*
+.vscode
+*.pub
+
+# Documentation
 !documentation/*
