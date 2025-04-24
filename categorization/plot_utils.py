@@ -88,24 +88,40 @@ def print_confusion_matrix(pred, true, feature, num_folds, name=None):
     for i in range(num_folds):
         for j in range(len(true)):
             if pred[i * 10 + j] == 1 and true[j] == 1:
-                matrix[0][1] += 1
+                matrix[0][1] += 1  # True Positive
             if pred[i * 10 + j] == 1 and true[j] == 0:
-                matrix[1][1] += 1
+                matrix[1][1] += 1  # False Positive
             if pred[i * 10 + j] == 0 and true[j] == 1:
-                matrix[0][0] += 1
+                matrix[0][0] += 1  # False Negative
             if pred[i * 10 + j] == 0 and true[j] == 0:
-                matrix[1][0] += 1
-    df_cm = DataFrame(matrix, index=["Positives", "Negative"], columns=[
-        "Negative", "Positives"])
+                matrix[1][0] += 1  # True Negative
+
+    df_cm = DataFrame(matrix, index=["Positives", "Negative"], columns=["Negative", "Positives"])
     plt.figure()
     ax = plt.axes()
     heatmap(df_cm, annot=True, ax=ax, fmt='g', vmin=0.0, vmax=220.0)
-    ax.set_title('Confusion Matrix ' + str(feature).capitalize())
+    ax.set_title('Confusion Matrix - ' + str(feature).capitalize())
     ax.set_ylabel("Actual Values")
     ax.set_xlabel("Predicted Values")
-    save_path = "data/plots/confusion_matrix_" + str(feature) + ".png" if name is None \
-        else "data/plots/confusion_matrix_{}_{}.png".format(feature, name)
-    plt.savefig(save_path)
+
+    # Calculate accuracy
+    TP = matrix[0][1]
+    TN = matrix[1][0]
+    FP = matrix[1][1]
+    FN = matrix[0][0]
+    accuracy = (TP + TN) / (TP + TN + FP + FN)
+    accuracy_text = f"Accuracy: {accuracy:.2%}"
+
+    # Add accuracy text to the plot
+    plt.text(0.5, -0.2, accuracy_text,
+             ha='center', va='center', transform=ax.transAxes,
+             fontsize=12, color='black')
+
+    print(f"\nAccuracy for {feature}: {accuracy:.4f}\n")
+
+    save_path = f"data/plots/confusion_matrix_{feature}.png" if name is None \
+        else f"data/plots/confusion_matrix_{feature}_{name}.png"
+    plt.savefig(save_path, bbox_inches='tight')
     plt.close()
 
 
