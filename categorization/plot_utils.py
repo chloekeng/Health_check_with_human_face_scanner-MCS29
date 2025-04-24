@@ -1,5 +1,4 @@
 import matplotlib.pyplot as plt
-import os
 import numpy as np
 import scipy.stats as st
 from pandas import DataFrame
@@ -24,17 +23,10 @@ def print_roc_curve(tprs, auc_sum, feature, folds, base_fpr=np.linspace(0, 1, 10
     plt.ylabel('True Positive Rate')
     plt.xlabel('False Positive Rate')
     plt.axes().set_aspect('equal', 'datalim')
-
-    # Ensure the directory exists before saving the file
-    save_dir = "data/plots/"
-    os.makedirs(save_dir, exist_ok=True)
-
     save_path = "data/plots/roc_{}.png".format(feature) if name is None \
         else "data/plots/roc_{}_{}.png".format(feature, name)
     plt.savefig(save_path)
     plt.close()
-
-    print(f"✅ ROC curve saved at: {save_path}")
 
 
 def compute_confidence_int(values):

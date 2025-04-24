@@ -1,48 +1,27 @@
 data/*
+!data/.gitkeep
 
-# Ignore all virtual environments
-venv/
-venv310/
-.venv/
-env/
+!data/parsed
+data/parsed/healthy/*
+!data/parsed/healthy/.gitkeep
+data/parsed/sick/*
+!data/parsed/sick/.gitkeep
 
-# Ignore VS Code settings
-.vscode/
+!data/unparsed
+data/unparsed/rug_healthy/*
+!data/unparsed/rug_healthy/.gitkeep
+data/unparsed/rug_sick/*
+!data/unparsed/rug_sick/.gitkeep
 
-# Bytecode and cache files
-__pycache__/
-*.pyc
-*.pyo
+data/extracted
 
-# Ignore data or model files (optional)
-*.h5
-*.pkl
-*.ckpt
+!data/plots
+data/plots/*
+!data/plots/.gitkeep
 
-data/parsed/*.zip
-# !data/.gitkeep
-
-# !data/parsed
-# data/parsed/healthy/*
-# !data/parsed/healthy/.gitkeep
-# data/parsed/sick/*
-# !data/parsed/sick/.gitkeep
-
-# !data/unparsed
-# data/unparsed/rug_healthy/*
-# !data/unparsed/rug_healthy/.gitkeep
-# data/unparsed/rug_sick/*
-# !data/unparsed/rug_sick/.gitkeep
-
-# data/extracted
-
-# !data/plots
-# data/plots/*
-# !data/plots/.gitkeep
-
-# !data/convertppm.py
-# !data/delete.py
-# !data/extract.py
+!data/convertppm.py
+!data/delete.py
+!data/extract.py
 
 *.zip
 

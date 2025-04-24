@@ -18,7 +18,7 @@ if __name__ == "__main__":
     if sys.argv[1] == 'stacked':
         face_features = ['stacked']
     elif sys.argv[1] == 'all':
-        face_features = ['mouth', 'nose', 'skin', 'left_eye', 'right_eye', 'stacked']
+        face_features = ['mouth', 'nose', 'skin', 'eye', 'stacked']
     elif sys.argv[1] == 'features':
         face_features = ['skin']
 
@@ -42,7 +42,10 @@ if __name__ == "__main__":
         else:
             stacked = 0
 
-        ftype = feature
+        if feature == 'eye':
+            ftype = 'right_eye'
+        else:
+            ftype = feature
 
         print("[INFO] Making plots for %s" % (feature))
 
@@ -66,7 +69,7 @@ if __name__ == "__main__":
                 pred = (saved_model.predict(val_images))
 
             else:
-                pred = saved_model.predict([val_images[0], val_images[1], val_images[2], val_images[3], val_images[4]])
+                pred = saved_model.predict([val_images[0], val_images[1], val_images[2], val_images[3]])
             if fold_no == 1:
                 predictions = to_labels(pred)
             else:
