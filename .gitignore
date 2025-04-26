@@ -40,3 +40,6 @@ categorization/model_saves/*
 
 # Documentation
 !documentation/*
+
+# ignore virtual environment 
+venv310
