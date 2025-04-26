@@ -1,3 +1,16 @@
+### Cross-validation for stacked model
+'''Loads training and validation image sets (stacked features: mouth, nose, skin, eye).
+Initializes and saves individual feature models.
+Uses StratifiedKFold to perform 10-fold cross-validation.
+For each fold:
+    Loads the individual models and defines a stacked model.
+    Trains the stacked model with early stopping and model checkpointing.
+    Saves training history and the best model.
+    Evaluates on the validation set (not the test fold).
+    Stores predictions and calculates the ROC curve and AUC.
+After the loop, it plots a combined ROC curve and prints a confusion matrix. 
+'''
+
 import os
 import sys
 

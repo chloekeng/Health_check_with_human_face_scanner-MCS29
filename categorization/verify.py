@@ -1,3 +1,17 @@
+"""
+Purpose:
+    Evaluates a single trained model (default is the stacked model for fold 1) using the validation set by:
+    - Predicting probabilities,
+    - Plotting the ROC curve with AUC,
+    - Creating a confusion matrix with custom labels ("Negative" / "Positive"),
+    - And displaying the accuracy directly below the confusion matrix plot.
+
+What’s Included:
+    - Uses a threshold (thresh = 0.8) to binarize predictions.
+    - Visualizes both ROC and confusion matrix, saves both plots.
+    - Includes clear labeling and a printout of binary predictions and true values.
+"""
+
 import tensorflow as tf
 import sys
 import os

@@ -1,6 +1,6 @@
-Documentation to track how many and which set of faces have been trained/validated on.
+Documentation to track how many and which set of faces have been trained/validated on and each run's accuracy.
 
-Run 1: 
+RUN 1
 Training Set:
 - Healthy: 30 
 - Sick 10
@@ -9,7 +9,7 @@ Validation Set:
 - Healthy: 4
 - Sick: 4
 
-Run 2
+RUN 2
 Training Set:
 - Healthy: 56 
 - Sick 36 
@@ -17,3 +17,24 @@ Training Set:
 Validation Set:
 - Healthy: 4
 - Sick: 4
+
+Rerun 2
+- to validation set to ensure 35 for healthy and 35 for sick. total 70
+
+RUN 3
+Training Set: 196
+- Healthy: 92
+- Sick: 104 (69 AI generated)
+
+Validation Set: 70
+- Healthy: 35
+- Sick: 35
+
+RUN 4
+Training Set: 230
+- Healthy: 126
+- Sick: 104 (69 AI generated)
+
+Validation Set: 70
+- Healthy: 35
+- Sick: 35
