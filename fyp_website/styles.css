@@ -117,36 +117,57 @@ button {
 .face-scan-container{
     margin: 2% auto;
     display: flex;
-    max-width: 60%;
-    max-height: 550px;
+    max-width: 50%;
+    max-height: 100%;
     background-color: lightgray;
     text-align: center;
     border-radius: 20px;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
 }
 
 /* Flexbox to arrange steps in a row */
 .oval-container {
-    margin: 4%;
+    position: relative;
+    width: 450px;
+    height: 500px;
     display: flex;
-    justify-content: center;
+    /* justify-content: center; */
     align-items: center;
-    text-align: center;
-    width: 100%;
 }
 
-.oval-container img{
-    display: block; 
-    /* width: 200px; */
-    object-fit: contain;
-    max-height: 100%;
+#camera-activate {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    display: none;
+}
+
+#oval-image {
+    z-index: 2;
+    max-width: 100%;
+    max-height: 90%;
+    width: auto;
+    height: auto;
+    /* object-fit: contain; */
+    position: absolute;
 }
 
 .overlay-text {
     position: absolute;
     color: white;
+    /* bottom: 0%; */
+    width: 100%;
     /* font-weight: bold; */
     /* font-size: 1rem; */
     text-align: center;
+    z-index: 3;
 }
 
 .camera-button {
@@ -173,5 +194,29 @@ button {
     border: none;
     cursor: pointer;
     font: inherit;
+}
+
+/* analysing style */
+
+.analyzing-container {
+    margin-top: 150px;
+    text-align: center;
+}
+
+.loading-bar {
+    width: 80%;
+    height: 30px;
+    background-color: #ddd;
+    border-radius: 20px;
+    margin: 30px auto;
+    overflow: hidden;
+}
+
+.loading-fill {
+    width: 0%;
+    height: 100%;
+    background-color: green;
+    border-radius: 20px;
+    transition: width 0.2s;
 }
 

@@ -10,8 +10,10 @@
 <body>
     <div class="face-scan-container">
         <div class="oval-container">
-            <img src="images/oval_ver_1.png" alt="Analyse face">
-            <p class="overlay-text">Place your face in the oval</p>
+            <!-- for live webcam feed -->
+            <video id="camera-activate" autoplay playsinline style="display: none;"></video>
+            <img id="oval-image" src="images/oval_ver_1.png" alt="Analyse face">
+            <p  id="overlay-text" class="overlay-text">Place your face in the oval</p>
         </div>
     </div>
 
@@ -21,9 +23,18 @@
         <img src="images/cam.png" alt="Camera">
     </button>
 
+    <input type="file" id="fileUpload" style="display: none;">
+    
     <p><strong>Or upload your recent face photo 
-        <a href="#" class="here-link"> here </a>
+        <a href="#" id="upload-link" class="here-link"> here </a>
         </strong>
     </p>
+
+    <!-- <div id="preview-container">
+        <img id="preview-image" style="display: none; max-width: 200px; margin-top: 20px;">
+    </div> -->
+    
+
+    <script src="script.js"></script>
 </body>
 </html>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analyzing...</title>
+    <link rel="stylesheet" href="styles.css"> <!-- reuse same CSS file -->
+</head>
+<body>
+    <div class="analyzing-container">
+        <h1>AI analyzing...</h1>
+        <p>This will take some time. Please wait patiently.</p>
+        
+        <div class="loading-bar">
+            <div class="loading-fill"></div>
+        </div>
+    </div>
+
+    <script>
+        // Animate the loading bar
+        const loadingFill = document.querySelector('.loading-fill');
+        let width = 0;
+        const interval = setInterval(() => {
+            if (width >= 100) {
+                clearInterval(interval);
+                // Optional: after loading complete, move to result page
+            } else {
+                width++;
+                loadingFill.style.width = width + '%';
+            }
+        }, 50); // Speed of loading
+    </script>
+</body>
+</html>
