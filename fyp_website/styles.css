@@ -114,6 +114,7 @@ button {
     color: black;
 }
 
+/* face scanning page */
 .face-scan-container{
     margin: 2% auto;
     display: flex;
@@ -197,26 +198,29 @@ button {
 }
 
 /* analysing style */
-
 .analyzing-container {
-    margin-top: 150px;
+    margin-top: 20%;
     text-align: center;
 }
 
-.loading-bar {
-    width: 80%;
-    height: 30px;
-    background-color: #ddd;
-    border-radius: 20px;
-    margin: 30px auto;
-    overflow: hidden;
+.loader {
+    border: 10px solid #f3f3f3; /* Light grey background */
+    border-top: 10px solid black; /* Black spinning part */
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    animation: spin 1s linear infinite;
+    margin: 40px auto;
 }
 
-.loading-fill {
-    width: 0%;
-    height: 100%;
-    background-color: green;
-    border-radius: 20px;
-    transition: width 0.2s;
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
+/* result page */
+.result-container {
+    margin: 10%;
+    align-items: center;
+    text-align: left;
+}

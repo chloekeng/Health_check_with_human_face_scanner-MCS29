@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Health Scan AI</title>
+    <title>Face Scan</title>
     <link rel="stylesheet" href="styles.css"> <!-- Link to CSS -->
 </head>
 
@@ -19,7 +19,7 @@
 
     <p><i>take off your glasses or masks or hair or anything that might cover your face</i></p>
 
-    <button onclick="accessCamera()" class="camera-button">
+    <button id="camera-button" class="camera-button">
         <img src="images/cam.png" alt="Camera">
     </button>
 
@@ -29,6 +29,8 @@
         <a href="#" id="upload-link" class="here-link"> here </a>
         </strong>
     </p>
+
+    <canvas id="photo-canvas" style="display: none;"></canvas>
 
     <!-- <div id="preview-container">
         <img id="preview-image" style="display: none; max-width: 200px; margin-top: 20px;">
