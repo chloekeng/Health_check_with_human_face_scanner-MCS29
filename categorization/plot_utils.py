@@ -11,7 +11,7 @@ def print_roc_curve(tprs, auc_sum, feature, folds, base_fpr=np.linspace(0, 1, 10
     std = tprs.std(axis=0)
 
     tprs_upper = np.minimum(mean_tprs + std, 1)
-    tprs_lower = mean_tprs - std
+    tprs_lower = np.maximum(mean_tprs - std, 0)  # FIXED
 
     plt.plot(base_fpr, mean_tprs, 'b')
     plt.fill_between(base_fpr, tprs_lower, tprs_upper, color='grey', alpha=0.3)
@@ -22,11 +22,12 @@ def print_roc_curve(tprs, auc_sum, feature, folds, base_fpr=np.linspace(0, 1, 10
     plt.title("{} model (AUC = {:.2f})".format(str(feature).capitalize(), auc_sum / folds), fontdict={'fontsize': 16})
     plt.ylabel('True Positive Rate')
     plt.xlabel('False Positive Rate')
-    plt.axes().set_aspect('equal', 'datalim')
+    plt.gca().set_aspect('equal', 'datalim')  # FIXED
     save_path = "data/plots/roc_{}.png".format(feature) if name is None \
         else "data/plots/roc_{}_{}.png".format(feature, name)
     plt.savefig(save_path)
     plt.close()
+
 
 
 def compute_confidence_int(values):
