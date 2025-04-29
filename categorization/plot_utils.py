@@ -29,7 +29,6 @@ def print_roc_curve(tprs, auc_sum, feature, folds, base_fpr=np.linspace(0, 1, 10
     plt.close()
 
 
-
 def compute_confidence_int(values):
     return st.t.interval(0.95, len(values) - 1, loc=np.nanmean(values), scale=st.sem(values, nan_policy='omit'))
 

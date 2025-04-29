@@ -38,3 +38,14 @@ Training Set: 230
 Validation Set: 70
 - Healthy: 35
 - Sick: 35
+
+RUN 5
+Training Set: 300
+- Healthy: 126
+- Sick: 174 (139 AI generated)
+
+Validation Set: 100
+- Healthy: 35
+- Sick: 65
+
+
