@@ -52,6 +52,7 @@ _Note:_
 |---------|----------|------------|
 | Healthy |   56     |     35      |
 |  Sick   |   36     |     35      |
+| Total | 92 | 70 |
 
 ### Results
 | Category | Accuracy | ROC Value | Precision | Recall | F1-Score |
@@ -65,6 +66,7 @@ _Note:_
 |---------|----------|------------|
 | Healthy |   92     |     35      |
 |  Sick   |   104 (69 AI Generated)  |   35   |
+| Total | 196 | 70 |
 
 ### Results
 | Category | Accuracy | ROC Value | Precision | Recall | F1-Score |
@@ -82,6 +84,7 @@ _Note:_
 |---------|----------|------------|
 | Healthy |   126     |     35      |
 |  Sick   |   104 (69 AI Generated)  |   35   |
+| Total | 230 | 70 |
 
 ### Results
 | Category | Accuracy | ROC Value | Precision | Recall | F1-Score |
@@ -93,4 +96,18 @@ _Note:_
 | Stacked | 416/770 = **0.54** | 0.90| 0.54 | 0.50 | 0.52 |
 
 
+## Run #5 
+|         | Training | Validation |
+|---------|----------|------------|
+| Healthy |   126     |     35      |
+|  Sick   |   174 (139 AI Generated)  |   65   |
+| Total | 300 | 100 |
 
+### Results
+| Category | Accuracy | ROC Value | Precision | Recall | F1-Score |
+|----------|--------------|-----------|--------|--------|---------|
+| Eye   |  1221/2000 = **0.61**  |  0.96  | 0.68 | 0.80 | 0.73 |
+| Mouth | 572/1000 = **0.57** | 0.99 | 0.67 | 0.67 | 0.67 |
+| Nose | 629/1000 = **0.63** | 0.96 | 0.68 | 0.81 | 0.74 |
+| Skin | 623/1000 = **0.62** | 0.95 | 0.67 | 0.82 | 0.74 |
+| Stacked | 684/1100 = **0.62** | 0.90| 0.70 | 0.72 | 0.71 |
