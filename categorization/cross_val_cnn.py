@@ -68,6 +68,7 @@ if __name__ == "__main__":
                     best_model_path = save_path + str(feature) + "/" + save
 
             saved_model = tf.keras.models.load_model(best_model_path, compile=False)
+            # find out which fold its from 
             del model
 
             if fold_no == 1:
@@ -78,6 +79,7 @@ if __name__ == "__main__":
 
             fold_no += 1
 
+            # move testing out of the loop
             pred = (saved_model.predict(val_images))
             fpr, tpr, _ = roc_curve(val_labels, pred)
             auc_sum += auc(fpr, tpr)
@@ -87,6 +89,11 @@ if __name__ == "__main__":
             tpr = interp(base_fpr, fpr, tpr)
             tpr[0] = 0.0
             tprs.append(tpr)
+            # TODO: gen 10 diff conf matrices
+            # should only be 100 total
+            print_confusion_matrix(predictions, val_labels, feature, folds) # then get avg
+
+        # TODO: testing here (do validation once)
 
         print_roc_curve(tprs, auc_sum, feature, folds)
         print_confusion_matrix(predictions, val_labels, feature, folds)
