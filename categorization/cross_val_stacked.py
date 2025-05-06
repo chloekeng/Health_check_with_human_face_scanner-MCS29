@@ -29,11 +29,11 @@ from categorization.data_utils import make_stacked_sets, to_labels, majority_vot
 
 if __name__ == "__main__":
     # --- paths & parameters ---
-    image_folder_training_sick   = 'data/parsed/training_sick'
-    image_folder_training_healthy= 'data/parsed/training_healthy'
-    image_folder_val_sick        = 'data/parsed/validation_sick'
-    image_folder_val_healthy     = 'data/parsed/validation_healthy'
-    save_path                    = 'categorization/model_saves'
+    image_folder_training_sick   = 'data/parsed/training_sick/'
+    image_folder_training_healthy= 'data/parsed/training_healthy/'
+    image_folder_val_sick        = 'data/parsed/validation_sick/'
+    image_folder_val_healthy     = 'data/parsed/validation_healthy/'
+    save_path                    = 'categorization/model_saves/'
     face_features                = ["mouth", "nose", "skin", "eye"]
     image_size                   = 128
     folds                        = 10
