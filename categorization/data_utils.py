@@ -15,87 +15,68 @@ def load_data(folder_sick, folder_healthy, image_size, ftype, extra_healthy=None
     if extra_sick is None:
         extra_sick = ftype
 
-    for filename in files_healthy:
+    for filename in sorted(files_healthy):
         sick = np.array([0])
-        full_path = folder_healthy + "/" + str(filename)
-        if ((ftype in filename) or (extra_healthy in filename)) \
-                and os.path.isfile(full_path):
+        full_path = os.path.join(folder_healthy, filename)
+        if ((ftype in filename) or (extra_healthy in filename)) and os.path.isfile(full_path):
             image = cv2.imread(full_path)
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-            image = cv2.resize(image, dsize=(
-                image_size, image_size), interpolation=cv2.INTER_CUBIC)
-            data.append(np.asarray(image, dtype=np.int32))
-            labels.append(np.asarray(sick, dtype=np.int32))
-    for filename in files_sick:
+            image = cv2.resize(image, (image_size, image_size), interpolation=cv2.INTER_CUBIC)
+            data.append(image.astype(np.int32))
+            labels.append(sick.astype(np.int32))
+    for filename in sorted(files_sick):
         sick = np.array([1])
-        full_path = folder_sick + "/" + str(filename)
-        if ((ftype in filename) or (extra_sick in filename)) \
-                and os.path.isfile(full_path):
+        full_path = os.path.join(folder_sick, filename)
+        if ((ftype in filename) or (extra_sick in filename)) and os.path.isfile(full_path):
             image = cv2.imread(full_path)
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-            image = cv2.resize(image, dsize=(
-                image_size, image_size), interpolation=cv2.INTER_CUBIC)
-            data.append(np.asarray(image, dtype=np.int32))
-            labels.append(np.asarray(sick, dtype=np.int32))
-    return np.asarray(data, dtype=np.float64) / 255, np.asarray(labels, dtype=np.int32)
+            image = cv2.resize(image, (image_size, image_size), interpolation=cv2.INTER_CUBIC)
+            data.append(image.astype(np.int32))
+            labels.append(sick.astype(np.int32))
+
+    return np.asarray(data, dtype=np.float64) / 255.0, np.asarray(labels, dtype=np.int32)
 
 
 def make_stacked_sets(image_folder_sick, image_folder_healthy, image_size):
-    train_images_mouth, train_labels = load_data(
-        image_folder_sick, image_folder_healthy, image_size, "mouth")
-    train_images_nose, train_labels = load_data(
-        image_folder_sick, image_folder_healthy, image_size, "nose")
-    train_images_skin, train_labels = load_data(
-        image_folder_sick, image_folder_healthy, image_size, "skin")
-    train_images_right_eye, train_labels = load_data(
-        image_folder_sick, image_folder_healthy, image_size, "_right", extra_sick="eye")
+    mouth, labels = load_data(image_folder_sick, image_folder_healthy, image_size, "mouth")
+    nose, _       = load_data(image_folder_sick, image_folder_healthy, image_size, "nose")
+    skin, _       = load_data(image_folder_sick, image_folder_healthy, image_size, "skin")
+    eye, _        = load_data(image_folder_sick, image_folder_healthy, image_size, "_right", extra_sick="eye")
 
-    perm = np.random.permutation(len(train_images_mouth))
-    print(len(train_images_mouth), len(train_images_nose), len(train_images_skin), len(train_images_right_eye))
-    train_images = [train_images_mouth[perm], train_images_nose[perm],
-                    train_images_skin[perm], train_images_right_eye[perm]]
-    train_labels = train_labels[perm]
-    return np.asarray(train_images), np.asarray(train_labels)
+    perm = np.random.permutation(len(mouth))
+    print(len(mouth), len(nose), len(skin), len(eye))
+
+    imgs = [mouth[perm], nose[perm], skin[perm], eye[perm]]
+    return np.asarray(imgs), labels[perm]
 
 
 def make_stacked_sets_unshuffled(image_folder_sick, image_folder_healthy, image_size):
-    train_images_mouth, train_labels = load_data(
-        image_folder_sick, image_folder_healthy, image_size, "mouth")
-    train_images_nose, train_labels = load_data(
-        image_folder_sick, image_folder_healthy, image_size, "nose")
-    train_images_skin, train_labels = load_data(
-        image_folder_sick, image_folder_healthy, image_size, "skin")
-    train_images_right_eye, train_labels = load_data(
-        image_folder_sick, image_folder_healthy, image_size, "_right")
+    mouth, labels = load_data(image_folder_sick, image_folder_healthy, image_size, "mouth")
+    nose, _       = load_data(image_folder_sick, image_folder_healthy, image_size, "nose")
+    skin, _       = load_data(image_folder_sick, image_folder_healthy, image_size, "skin")
+    eye, _        = load_data(image_folder_sick, image_folder_healthy, image_size, "_right")
 
-    train_images = [train_images_mouth, train_images_nose,
-                    train_images_skin, train_images_right_eye]
-
-    return np.asarray(train_images), np.asarray(train_labels)
+    imgs = [mouth, nose, skin, eye]
+    return np.asarray(imgs), labels
 
 
 def load_shuffled_data(folder_sick, folder_healthy, image_size, ftype):
     data, labels = load_data(folder_sick, folder_healthy, image_size, ftype)
-    permutation = np.random.permutation(len(data))
-    return data[permutation], labels[permutation]
+    perm = np.random.permutation(len(data))
+    return data[perm], labels[perm]
 
 
 def save_history(save_path, history, feature, i):
-    if i < 3:
-        with open(save_path + str(feature) + "/history_" + str(i) + ".pickle", 'wb') as file_pi:
-            pickle.dump(history.history, file_pi)
-    else:
-        with open(save_path + str(feature) + "/history.pickle", 'wb') as file_pi:
-            pickle.dump(history.history, file_pi)
+    path = os.path.join(save_path, str(feature))
+    fname = f"history_{i}.pickle" if i < 3 else "history.pickle"
+    with open(os.path.join(path, fname), 'wb') as f:
+        pickle.dump(history.history, f)
 
 
 def to_labels(predictions):
-    pred = np.zeros((len(predictions), 1))
-    for i in range(len(predictions)):
-        if predictions[i] < 0.5:
-            pred[i] = 0
-        else:
-            pred[i] = 1
+    pred = np.zeros((len(predictions), 1), dtype=np.int32)
+    for i, p in enumerate(predictions):
+        pred[i] = 1 if p >= 0.5 else 0
     return pred
 
 
@@ -103,22 +84,43 @@ def compute_per_participant(pred, val_labels, folds, feature):
     if feature == 'eye':
         return compute_per_participant_step(pred, val_labels, folds)
 
-    per_participant = np.zeros(len(val_labels))
+    per_participant = np.zeros(len(val_labels), dtype=np.float32)
     for i in range(folds):
-        for j in range(0, len(val_labels)):
-            if pred[i * 10 + j] == 1 and val_labels[j] == 1:
-                per_participant[j] += 1
-            if pred[i * 10 + j] == 0 and val_labels[j] == 0:
+        for j in range(len(val_labels)):
+            if (pred[i*10+j] == val_labels[j]):
                 per_participant[j] += 1
     return per_participant / folds
 
 
 def compute_per_participant_step(pred, val_labels, folds):
-    per_participant = np.zeros(int(len(val_labels) / 2))
+    half = len(val_labels) // 2
+    per_participant = np.zeros(half, dtype=np.float32)
     for i in range(folds):
         for j in range(0, len(val_labels), 2):
-            if pred[i * 10 + j] == 1 and val_labels[j] == 1:
-                per_participant[int(j / 2)] += 1
-            if pred[i * 10 + j] == 0 and val_labels[j] == 0:
-                per_participant[int(j / 2)] += 1
+            if (pred[i*10+j] == val_labels[j]):
+                per_participant[j//2] += 1
     return per_participant / folds
+
+
+# ─── NEW: majority_vote ──────────────────────────────────────────────────
+
+def majority_vote(predictions_list, threshold=None):
+    """
+    Combine binary predictions from multiple features into one per-person vote.
+
+    Args:
+      predictions_list: list of 1D np.arrays of shape (N,) with values {0,1}.
+      threshold:        minimum number of "1" votes to flag sick.
+                        If None, defaults to strict majority (floor(F/2)+1).
+
+    Returns:
+      1D np.array of shape (N,), dtype=int32, with the final 0/1 vote.
+    """
+    # Stack into shape (F, N) and sum votes per person
+    votes = np.stack(predictions_list, axis=0).sum(axis=0)
+    F = len(predictions_list)
+    if threshold is None:
+        threshold = (F // 2) + 1
+
+    # Final = 1 wherever votes ≥ threshold
+    return (votes >= threshold).astype(np.int32)
