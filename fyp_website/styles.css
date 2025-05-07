@@ -115,6 +115,40 @@ button {
 }
 
 /* face scanning page */
+.popup-box {
+    position: fixed;
+    top: 0;
+    left: 0;
+    max-width: 100vw;
+    height: 100vh;
+    /* background-color: red; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+/* Content box */
+.popup-content {
+    background: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    width: 70%;
+    position: relative;
+}
+
+/* X button */
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 22px;
+    cursor: pointer;
+}
+
 .face-scan-container{
     margin: 2% auto;
     display: flex;

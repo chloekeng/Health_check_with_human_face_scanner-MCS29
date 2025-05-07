@@ -84,7 +84,22 @@ document.addEventListener('DOMContentLoaded', function() {
             window.location.href = "analysing-page.html";
         }
     })
+
+    const popup = document.getElementById('privacy-popup');
+    if (popup) {
+        popup.style.display = 'flex';
+    }
 })
+
+function closePrivacyNotice() {
+    const popup = document.getElementById('privacy-popup');
+    if (popup) {
+        popup.style.display = 'none';
+    }
+}
+
+
+
 
 // captureButton.addEventListener('click', function() {
 //     const context = canvas.getContext('2d');
