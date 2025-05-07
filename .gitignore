@@ -42,3 +42,4 @@ categorization/model_saves/*
 !documentation/*
 
 venv310
+.DS_Store
