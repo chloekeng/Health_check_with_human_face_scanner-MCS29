@@ -44,3 +44,4 @@ augment/output/checkpoints/*
 
 # ignore virtual environment 
 venv310
+.venv
