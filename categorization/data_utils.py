@@ -47,13 +47,15 @@ def make_stacked_sets(image_folder_sick, image_folder_healthy, image_size):
         image_folder_sick, image_folder_healthy, image_size, "nose")
     train_images_skin, train_labels = load_data(
         image_folder_sick, image_folder_healthy, image_size, "skin")
+    train_images_left_eye, train_labels = load_data(
+        image_folder_sick, image_folder_healthy, image_size, "left_eye")
     train_images_right_eye, train_labels = load_data(
-        image_folder_sick, image_folder_healthy, image_size, "_right", extra_sick="eye")
+        image_folder_sick, image_folder_healthy, image_size, "right_eye")
 
     perm = np.random.permutation(len(train_images_mouth))
-    print(len(train_images_mouth), len(train_images_nose), len(train_images_skin), len(train_images_right_eye))
+    print(len(train_images_mouth), len(train_images_nose), len(train_images_skin),len(train_images_left_eye), len(train_images_right_eye))
     train_images = [train_images_mouth[perm], train_images_nose[perm],
-                    train_images_skin[perm], train_images_right_eye[perm]]
+                    train_images_skin[perm], train_images_left_eye[perm], train_images_right_eye[perm]]
     train_labels = train_labels[perm]
     return np.asarray(train_images), np.asarray(train_labels)
 
@@ -65,11 +67,13 @@ def make_stacked_sets_unshuffled(image_folder_sick, image_folder_healthy, image_
         image_folder_sick, image_folder_healthy, image_size, "nose")
     train_images_skin, train_labels = load_data(
         image_folder_sick, image_folder_healthy, image_size, "skin")
+    train_images_left_eye, train_labels = load_data(
+        image_folder_sick, image_folder_healthy, image_size, "left_eye")
     train_images_right_eye, train_labels = load_data(
-        image_folder_sick, image_folder_healthy, image_size, "_right")
+        image_folder_sick, image_folder_healthy, image_size, "right_eye")
 
     train_images = [train_images_mouth, train_images_nose,
-                    train_images_skin, train_images_right_eye]
+                    train_images_skin, train_images_left_eye, train_images_right_eye]
 
     return np.asarray(train_images), np.asarray(train_labels)
 
@@ -99,9 +103,9 @@ def to_labels(predictions):
     return pred
 
 
-def compute_per_participant(pred, val_labels, folds, feature):
-    if feature == 'eye':
-        return compute_per_participant_step(pred, val_labels, folds)
+def compute_per_participant(pred, val_labels, folds):
+    # if feature == 'eye':
+    #     return compute_per_participant_step(pred, val_labels, folds)
 
     per_participant = np.zeros(len(val_labels))
     for i in range(folds):

@@ -38,9 +38,10 @@ test_faces, _ = load_data('data/parsed/validation_sick', 'data/parsed/validation
 test_images_mouth, test_labels = load_data('data/parsed/validation_sick', 'data/parsed/validation_healthy', image_size, "mouth")
 test_images_face, test_labels = load_data('data/parsed/validation_sick', 'data/parsed/validation_healthy', image_size, "nose")
 test_images_skin, test_labels = load_data('data/parsed/validation_sick', 'data/parsed/validation_healthy', image_size, "skin")
-test_images_right_eye, test_labels = load_data('data/parsed/validation_sick', 'data/parsed/validation_healthy', image_size, "_right")
+test_images_left_eye, test_labels = load_data('data/parsed/validation_sick', 'data/parsed/validation_healthy', image_size, "left_eye")
+test_images_right_eye, test_labels = load_data('data/parsed/validation_sick', 'data/parsed/validation_healthy', image_size, "right_eye")
 
-test_images = [test_images_mouth, test_images_face, test_images_skin, test_images_right_eye]
+test_images = [test_images_mouth, test_images_face, test_images_skin, test_images_left_eye, test_images_right_eye]
 
 # Settings
 feature = "stacked"
@@ -56,8 +57,10 @@ elif feature == "nose":
     imgs = test_images[1]
 elif feature == "skin":
     imgs = test_images[2]
-elif feature == "eye":
+elif feature == "left_eye":
     imgs = test_images[3]
+elif feature == "right_eye":
+    imgs = test_images[4]
 
 # Load model and predict
 model = tf.keras.models.load_model(f"categorization/model_saves/{feature}/model_{fold}.h5", compile=False)

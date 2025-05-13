@@ -21,7 +21,7 @@ if __name__ == "__main__":
     image_folder_val_healthy = 'data/parsed/validation_healthy'
 
     save_path = 'categorization/model_saves/'
-    face_features = ["mouth", "nose", "skin", "eye"]
+    face_features = ["mouth", "nose", "skin", "left_eye", "right_eye"]
 
     base_fpr = np.linspace(0, 1, 101)
     image_size = 128

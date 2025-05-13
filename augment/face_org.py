@@ -148,9 +148,8 @@ def extractFeatures(img, detector, predictor, dominant_color, status, file_name)
 
             else:
                 if name == 'right':
-                    name = name + "_eye"
-                exportImage(status, file_name, name, cv2.cvtColor(
-                    result_array, cv2.COLOR_BGR2RGB))
+                    exportImage(status, file_name, str(name) + "_eye", cv2.cvtColor(
+                        result_array, cv2.COLOR_BGR2RGB))
 
     return shape
 
