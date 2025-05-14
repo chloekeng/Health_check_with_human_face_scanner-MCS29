@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Face Scan</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Link to CSS -->
+</head>
+
+<body>
+    <div id="privacy-popup" class ="popup-box">
+        <div class="popup-content">
+            <span class="close-button" onclick="closePrivacyNotice()">×</span>
+            <p>Your privacy is our top priority. The images captured are used solely for health analysis and are not stored or shared without your consent.
+                All data is encrypted and handled with strict confidentiality in accordance with our [Terms of Service] and [Privacy Policy].
+            </p>
+        </div>
+    </div>
+
+
+    <div class="face-scan-container">
+        <div class="oval-container">
+            <!-- for live webcam feed -->
+            <video id="camera-activate" autoplay playsinline style="display: none;"></video>
+            <img id="oval-image" src="images/oval_ver_1.png" alt="Analyse face">
+            <p  id="overlay-text" class="overlay-text">Place your face in the oval</p>
+        </div>
+    </div>
+
+    <p><i>take off your glasses or masks or hair or anything that might cover your face</i></p>
+
+    <button id="camera-button" class="camera-button">
+        <img src="images/cam.png" alt="Camera">
+    </button>
+
+    <input type="file" id="fileUpload" style="display: none;">
+    
+    <p><strong>Or upload your recent face photo 
+        <a href="#" id="upload-link" class="here-link"> here </a>
+        </strong>
+    </p>
+
+    <canvas id="photo-canvas" style="display: none;"></canvas>
+
+    <!-- <div id="preview-container">
+        <img id="preview-image" style="display: none; max-width: 200px; margin-top: 20px;">
+    </div> -->
+    
+
+    <script src="script.js"></script>
+</body>
+</html>
