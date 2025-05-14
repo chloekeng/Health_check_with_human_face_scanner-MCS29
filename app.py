@@ -13,7 +13,7 @@ face_features = ["mouth", "nose", "skin", "left_eye", "right_eye"]
 # Load models for each region
 models = {}
 for feature in face_features:
-    model_path = f'categorization/model_saves/{feature}/model.h5'
+    model_path = f'categorization/model_saves/{feature}/model_*.h5'
     try:
         models[feature] = tf.keras.models.load_model(model_path, compile=False)
         print(f"[INFO] Loaded model for {feature}")
@@ -55,7 +55,16 @@ def predict():
 
     sick_votes = votes.count("Sick")
     healthy_votes = votes.count("Healthy")
-    final_result = "Sick" if sick_votes > healthy_votes else "Healthy"
+    final_result = "Sick" if sick_votes >= 2 else "Healthy"
+
+    # DEBUG: show what each “doctor” said and the final tally
+    print("=== VOTING DEBUG ===")
+    for feature, score in confidence_scores.items():
+        vote = "Sick" if score != "Error" and score > 0.5 else "Healthy"
+        print(f" - {feature}: prob={score} → vote={vote}")
+    print(f" Sick votes: {sick_votes}, Healthy votes: {healthy_votes}")
+    print(f" FINAL result: {final_result}")
+    print("====================")
 
     return jsonify({
         "result": final_result,
