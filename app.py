@@ -3,22 +3,35 @@ from flask_cors import CORS
 import tensorflow as tf
 import numpy as np
 from PIL import Image
+import glob, os
 
 app = Flask(__name__)
 CORS(app)
 
 # Facial features to vote on
-face_features = ["mouth", "nose", "skin", "left_eye", "right_eye"]
+# face_features = ["mouth", "nose", "skin", "left_eye", "right_eye"]
+face_features = ["mouth", "nose", "skin", "eye"]
 
 # Load models for each region
 models = {}
 for feature in face_features:
-    model_path = f'categorization/model_saves/{feature}/model_*.h5'
-    try:
-        models[feature] = tf.keras.models.load_model(model_path, compile=False)
-        print(f"[INFO] Loaded model for {feature}")
-    except Exception as e:
-        print(f"[ERROR] Could not load model for {feature}: {e}")
+    pattern = os.path.join("categorization", "model_saves", feature, "model_*.h5")
+    # model_path = f'categorization/model_saves/{feature}/model_*.h5'
+    candidates = glob.glob(pattern)
+    if not candidates:
+        raise FileNotFoundError(f"No models found for '{feature}', looked for {pattern}")
+
+    # sort by the fold number and pick the highest
+    candidates.sort(key=lambda p: int(os.path.basename(p).split("_")[1].split(".")[0]))
+    best_checkpoint = candidates[-1]
+
+    print(f"[INFO] Loading {feature} model from → {best_checkpoint}")
+    models[feature] = tf.keras.models.load_model(best_checkpoint, compile=False)
+    # try:
+    #     models[feature] = tf.keras.models.load_model(model_path, compile=False)
+    #     print(f"[INFO] Loaded model for {feature}")
+    # except Exception as e:
+    #     print(f"[ERROR] Could not load model for {feature}: {e}")
 
 def preprocess_image(file, size=128):
     img = Image.open(file).convert("RGB").resize((size, size))
