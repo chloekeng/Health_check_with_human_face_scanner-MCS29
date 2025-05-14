@@ -86,6 +86,10 @@ if __name__ == "__main__":
         pred = stacked.predict(
             [val_images[0], val_images[1], val_images[2], val_images[3], val_images[4]])
 
+        # NEW: Save and print confusion matrix for this fold only
+        fold_predictions = to_labels(pred)
+        print_confusion_matrix(fold_predictions, val_labels, "stacked", 1, name=f"fold{fold_no}")
+
         if fold_no == 1:
             predictions = to_labels(pred)
         else:
