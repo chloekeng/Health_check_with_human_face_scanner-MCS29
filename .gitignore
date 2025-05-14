@@ -31,7 +31,7 @@ data/extracted/
 
 # Checkpoints and model outputs
 augment/output/checkpoints/*
-categorization/model_saves/*
+# categorization/model_saves/*
 
 # Cache and IDE settings
 */__pycache__/*

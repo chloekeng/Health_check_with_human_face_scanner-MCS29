@@ -144,12 +144,14 @@ def extractFeatures(img, detector, predictor, dominant_color, status, file_name)
 
             if name == 'left':
                 exportImage(status, file_name, str(name) + "_eye", cv2.cvtColor(
-                    cv2.flip(result_array, 1), cv2.COLOR_BGR2RGB))
+                    result_array, cv2.COLOR_BGR2RGB))
 
+            elif name == 'right':
+                exportImage(status, file_name, str(name) + "_eye", cv2.cvtColor(
+                    result_array, cv2.COLOR_BGR2RGB))
             else:
-                if name == 'right':
-                    exportImage(status, file_name, str(name) + "_eye", cv2.cvtColor(
-                        result_array, cv2.COLOR_BGR2RGB))
+                exportImage(status, file_name, str(name), cv2.cvtColor(
+                    result_array, cv2.COLOR_BGR2RGB))
 
     return shape
 
@@ -237,7 +239,7 @@ def extractFace(path_to_img, status, file_name, faceCascade, detector, predictor
 if __name__ == "__main__":
 
     # for s in ["rug_healthy", "rug_sick", "cfd_healthy", "cfd_sick", "validation_healthy", "validation_sick"]:
-    for s in [ "healthy"]:
+    for s in [ "validation_healthy"]:
     # for s in ["healthy_female"]:
 
         print("Scanning ", s, " patients...")
