@@ -1,5 +1,8 @@
 import os
 import sys
+import datetime
+from contextlib import redirect_stdout
+
 
 import tensorflow as tf
 from numpy import interp
@@ -45,6 +48,10 @@ if __name__ == "__main__":
 
         plt.figure()
 
+        # var to track best fold info
+        best_f1_overall = 0
+        best_fold = -1
+
         for train, test in skfold.split(images, labels):
 
             tf.keras.backend.clear_session()
@@ -68,32 +75,67 @@ if __name__ == "__main__":
                     best_model_path = save_path + str(feature) + "/" + save
 
             saved_model = tf.keras.models.load_model(best_model_path, compile=False)
-            # find out which fold its from 
-            del model
+            
+            val_preds = saved_model.predict(val_images)
+            pred_labels = to_labels(val_preds)
 
-            if fold_no == 1:
-                predictions = to_labels(saved_model.predict(val_images))
+            # Save confusion matrix for this fold only
+            best_f1 = max(history.history['val_F1_metric'])
+            if fold_no == 1 or best_f1 > best_f1_overall:
+                best_f1_overall = best_f1
+                best_fold = fold_no
+                is_best = "best"
             else:
-                predictions = np.concatenate(
-                    (predictions, to_labels(saved_model.predict(val_images))), axis=0)
+                is_best = ""
 
-            fold_no += 1
+            conf_name = f"{feature}_fold{fold_no}_{is_best}".strip("_")
+            
+            print_confusion_matrix(pred_labels, val_labels, feature, folds, name=conf_name)
+            
+            # Track overall predictions if needed
+            if fold_no == 1:
+                predictions = pred_labels
+            else:
+                predictions = np.concatenate((predictions, pred_labels), axis=0)
 
-            # move testing out of the loop
-            pred = (saved_model.predict(val_images))
-            fpr, tpr, _ = roc_curve(val_labels, pred)
+            # ROC Curve
+            fpr, tpr, _ = roc_curve(val_labels, val_preds)
             auc_sum += auc(fpr, tpr)
-            del saved_model
-
-            plt.plot(fpr, tpr, 'b', alpha=0.15)
             tpr = interp(base_fpr, fpr, tpr)
             tpr[0] = 0.0
             tprs.append(tpr)
-            # TODO: gen 10 diff conf matrices
-            # should only be 100 total
-            print_confusion_matrix(predictions, val_labels, feature, folds) # then get avg
+
+            fold_no += 1
 
         # TODO: testing here (do validation once)
+        
+        # Final testing on entire validation set
+        print("\n[INFO] Final Evaluation on Entire Validation Set")
+
+        # Predict using best models from each fold and average them
+        all_preds = np.zeros((val_images.shape[0], folds))
+
+        for i in range(1, folds + 1):
+            model_path = os.path.join(save_path, feature, f"model_{i}.h5")
+            model = tf.keras.models.load_model(model_path, compile=False)
+            preds = model.predict(val_images)
+            all_preds[:, i - 1] = preds.flatten()
+            del model
+
+        # Average predictions across all folds
+        avg_preds = np.mean(all_preds, axis=1)
+        avg_labels = to_labels(avg_preds)
+
+        # Final Confusion Matrix and Accuracy
+        print_confusion_matrix(avg_labels, val_labels, feature, folds, name="final")
+
+        # print average accuracy
+        acc = np.mean(avg_labels == val_labels)
+        print(f"[RESULT] Final averaged accuracy for {feature}: {acc:.4f}")
+
 
         print_roc_curve(tprs, auc_sum, feature, folds)
         print_confusion_matrix(predictions, val_labels, feature, folds)
+
+
+

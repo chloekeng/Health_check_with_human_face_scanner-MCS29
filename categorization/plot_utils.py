@@ -84,17 +84,35 @@ def print_confidence_intervals(pred, true, auc_values, feature, num_folds, name=
 
 
 def print_confusion_matrix(pred, true, feature, num_folds, name=None):
+    pred = np.array(pred)
+    true = np.array(true)
+
     matrix = np.zeros((2, 2))
-    for i in range(num_folds):
-        for j in range(len(true)):
-            if pred[i * 10 + j] == 1 and true[j] == 1:
+
+    if len(pred) == len(true):  # flat predictions
+        for i in range(len(true)):
+            if pred[i] == 1 and true[i] == 1:
                 matrix[0][1] += 1  # True Positive
-            if pred[i * 10 + j] == 1 and true[j] == 0:
+            if pred[i] == 1 and true[i] == 0:
                 matrix[1][1] += 1  # False Positive
-            if pred[i * 10 + j] == 0 and true[j] == 1:
+            if pred[i] == 0 and true[i] == 1:
                 matrix[0][0] += 1  # False Negative
-            if pred[i * 10 + j] == 0 and true[j] == 0:
+            if pred[i] == 0 and true[i] == 0:
                 matrix[1][0] += 1  # True Negative
+    else:  # legacy grid-based indexing
+        for i in range(num_folds):
+            for j in range(len(true)):
+                idx = i * 10 + j
+                if idx >= len(pred):  # safeguard
+                    continue
+                if pred[idx] == 1 and true[j] == 1:
+                    matrix[0][1] += 1  # True Positive
+                if pred[idx] == 1 and true[j] == 0:
+                    matrix[1][1] += 1  # False Positive
+                if pred[idx] == 0 and true[j] == 1:
+                    matrix[0][0] += 1  # False Negative
+                if pred[idx] == 0 and true[j] == 0:
+                    matrix[1][0] += 1  # True Negative
 
     df_cm = DataFrame(matrix, index=["Positives", "Negative"], columns=["Negative", "Positives"])
     plt.figure()
@@ -112,7 +130,6 @@ def print_confusion_matrix(pred, true, feature, num_folds, name=None):
     accuracy = (TP + TN) / (TP + TN + FP + FN)
     accuracy_text = f"Accuracy: {accuracy:.2%}"
 
-    # Add accuracy text to the plot
     plt.text(0.5, -0.2, accuracy_text,
              ha='center', va='center', transform=ax.transAxes,
              fontsize=12, color='black')
