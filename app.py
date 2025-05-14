@@ -10,7 +10,7 @@ CORS(app)
 
 # Facial features to vote on
 # face_features = ["mouth", "nose", "skin", "left_eye", "right_eye"]
-face_features = ["mouth", "nose", "skin", "eye"]
+face_features = ["mouth", "nose", "skin", "left_eye", "right_eye"]
 
 # Load models for each region
 models = {}
