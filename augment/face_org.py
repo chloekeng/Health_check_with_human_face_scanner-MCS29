@@ -239,7 +239,7 @@ def extractFace(path_to_img, status, file_name, faceCascade, detector, predictor
 if __name__ == "__main__":
 
     # for s in ["rug_healthy", "rug_sick", "cfd_healthy", "cfd_sick", "validation_healthy", "validation_sick"]:
-    for s in [ "validation_healthy"]:
+    for s in [ "sick_ai"]:
     # for s in ["healthy_female"]:
 
         print("Scanning ", s, " patients...")

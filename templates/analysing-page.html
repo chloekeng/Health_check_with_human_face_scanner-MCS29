@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Analysing...</title>
-    <link rel="stylesheet" href="styles.css"> <!-- reuse same CSS file -->
+    <!-- <link rel="stylesheet" href="styles.css"> reuse same CSS file -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
     <div class="analyzing-container">
@@ -13,7 +14,7 @@
         <p>It will take some time...</p>
     </div>
 
-    <script>
+    <!-- <script>
         // Animate the loading bar
         const loadingFill = document.querySelector('.loading-fill');
         let width = 0;
@@ -26,6 +27,7 @@
                 loadingFill.style.width = width + '%';
             }
         }, 50); // Speed of loading
-    </script>
+    </script> -->
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>

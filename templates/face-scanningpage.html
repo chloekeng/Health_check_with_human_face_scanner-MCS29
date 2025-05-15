@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Face Scan</title>
-    <link rel="stylesheet" href="styles.css"> <!-- Link to CSS -->
+    <!-- <link rel="stylesheet" href="styles.css"> Link to CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 
 <body>
@@ -22,7 +23,8 @@
         <div class="oval-container">
             <!-- for live webcam feed -->
             <video id="camera-activate" autoplay playsinline style="display: none;"></video>
-            <img id="oval-image" src="images/oval_ver_1.png" alt="Analyse face">
+            <!-- <img id="oval-image" src="images/oval_ver_1.png" alt="Analyse face"> -->
+            <img id="oval-image" src="{{ url_for('static', filename='images/oval_ver_1.png') }}" alt="Analyse face">
             <p  id="overlay-text" class="overlay-text">Place your face in the oval</p>
         </div>
     </div>
@@ -30,7 +32,7 @@
     <p><i>take off your glasses or masks or hair or anything that might cover your face</i></p>
 
     <button id="camera-button" class="camera-button">
-        <img src="images/cam.png" alt="Camera">
+        <img src="{{ url_for('static', filename='images/cam.png') }}" alt="Camera">
     </button>
 
     <input type="file" id="fileUpload" style="display: none;">
@@ -47,6 +49,7 @@
     </div> -->
     
 
-    <script src="script.js"></script>
+    <!-- <script src="script.js"></script> -->
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>

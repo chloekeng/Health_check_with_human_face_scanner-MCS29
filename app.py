@@ -5,7 +5,9 @@ import numpy as np
 from PIL import Image
 import glob, os
 
-app = Flask(__name__)
+app = Flask(__name__, 
+            static_folder='static',      # serves /static/*
+            template_folder='templates') # renders templates/*.html
 CORS(app)
 
 # Facial features to vote on
@@ -39,8 +41,20 @@ def preprocess_image(file, size=128):
     return np.expand_dims(img_array, axis=0)
 
 @app.route("/")
-def index():
-    return "Health Check API is running!"
+def home():
+    return render_template("index.html")
+
+@app.route("/scan")
+def scan():
+    return render_template("face-scanningpage.html")
+
+@app.route("/analyse")
+def analyse():
+    return render_template("analysing-page.html")
+
+@app.route("/result")
+def result():
+    return render_template("results-page.html")
 
 @app.route("/predict", methods=["POST"])
 def predict():
@@ -68,7 +82,7 @@ def predict():
 
     sick_votes = votes.count("Sick")
     healthy_votes = votes.count("Healthy")
-    final_result = "Sick" if sick_votes >= 2 else "Healthy"
+    final_result = "Sick" if sick_votes > healthy_votes else "Healthy"
 
     # DEBUG: show what each “doctor” said and the final tally
     print("=== VOTING DEBUG ===")
