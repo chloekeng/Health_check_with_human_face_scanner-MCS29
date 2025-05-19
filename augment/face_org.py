@@ -10,7 +10,8 @@ generator for the entire eye region.
 Building upon Shuvrajit9904's work:
 https://github.com/Shuvrajit9904/PairedCycleGAN-tf/blob/master/parse_face.py
 '''
-
+import matplotlib
+matplotlib.use('Agg')
 from imutils import face_utils as futil
 import numpy as np
 import argparse
@@ -235,6 +236,9 @@ def extractFace(path_to_img, status, file_name, faceCascade, detector, predictor
 
     exportImage(status, file_name, "skin",
                 cv2.cvtColor(face_copy, cv2.COLOR_BGR2RGB))
+    
+    # signal “success” back to the caller
+    return True
 
 if __name__ == "__main__":
 

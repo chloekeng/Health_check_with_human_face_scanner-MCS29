@@ -4,6 +4,12 @@ import tensorflow as tf
 import numpy as np
 from PIL import Image
 import glob, os
+import matplotlib
+matplotlib.use("Agg")
+from augment.face_org import extractFace, faceCascade, detector, predictor
+from werkzeug.utils import secure_filename
+from pathlib import Path
+
 
 app = Flask(__name__, 
             static_folder='static',      # serves /static/*
@@ -56,29 +62,68 @@ def analyse():
 def result():
     return render_template("results-page.html")
 
+def preprocess_array(arr, size=128):
+    """Resize a NumPy array and scale to [0,1]."""
+    img = Image.fromarray(arr).convert("RGB").resize((size, size))
+    return np.expand_dims(np.array(img)/255.0, axis=0)
+
 @app.route("/predict", methods=["POST"])
 def predict():
     if 'file' not in request.files:
         return jsonify({'error': 'No image uploaded'}), 400
+    
+    upload = request.files['file']
+    fname  = secure_filename(upload.filename)
+    stem   = Path(fname).stem
+    tmpdir = Path("data/parsed/tmp")
+    tmpdir.mkdir(parents=True, exist_ok=True)
+    on_disk = tmpdir / fname
+    upload.save(on_disk)
 
-    file = request.files['file']
-    try:
-        img = preprocess_image(file)
-    except Exception as e:
-        return jsonify({'error': 'Image preprocessing failed', 'details': str(e)}), 500
+    print("→ Saved upload to:", on_disk)
+    print("→ tmpdir contents:", list(tmpdir.iterdir()))
+
+    # 2) run your face-cropper
+    cropped = extractFace(
+        str(on_disk),
+        status="tmp",
+        file_name=stem,
+        faceCascade=faceCascade,
+        predictor=predictor,
+        detector=detector
+    )
+    print("→ extractFace returned:", cropped)
+
+    if cropped is None:
+        return jsonify(error="No face detected"), 400
+
+    # 3) make sure all five crops are there
+    print("→ looking for crops:")
+    for feat in face_features:
+        p = tmpdir / f"{stem}_{feat}.png"
+        print(f"    {feat:10s} -> exists={p.exists()} ({p.name})")
+        if not p.exists():
+            return jsonify(error=f"Missing crop for {feat}"), 500
+
 
     votes = []
     confidence_scores = {}
 
-    for feature, model in models.items():
-        try:
-            prediction = model.predict(img)[0][0]
-            label = 'Sick' if prediction > 0.5 else 'Healthy'
-            votes.append(label)
-            confidence_scores[feature] = float(prediction)
-        except Exception as e:
-            confidence_scores[feature] = f"Error: {str(e)}"
-            votes.append("Error")
+    for feat in face_features:
+        p = tmpdir / f"{stem}_{feat}.png"
+        print(f"    {feat:10s} -> {p.exists()}  ({p})")
+        crop = tmpdir / f"{stem}_{feat}.png"
+        if not crop.exists():
+            return jsonify(error=f"Missing crop for {feat}"), 500
+
+        arr = np.array(Image.open(str(crop)))
+        x   = preprocess_array(arr)
+        p   = float(models[feat].predict(x)[0][0])
+        label = "Sick" if p > 0.5 else "Healthy"
+
+        votes.append(label)
+        confidence_scores[feat] = p
+
 
     sick_votes = votes.count("Sick")
     healthy_votes = votes.count("Healthy")

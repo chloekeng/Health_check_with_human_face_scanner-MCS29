@@ -100,10 +100,15 @@ function handleFileUpload(e) {
       data.append("file", file);
     
       fetch("/predict", { method: "POST", body: data })
-        .then(res => {
-          if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
-          return res.json();
-        })
+        .then(res =>
+            res.json().then(payload => {
+            if (!res.ok) {
+                // server sent you a JSON error message
+                throw new Error(payload.error || `${res.status} ${res.statusText}`);
+            }
+            return payload;
+            })
+        )
         .then(json => {
           // stash & go to results
           sessionStorage.setItem("predictionResult",    json.result);
