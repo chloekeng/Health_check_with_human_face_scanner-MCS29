@@ -108,6 +108,36 @@ def predict():
 
     votes = []
     confidence_scores = {}
+    thresholds = {
+        "mouth": 0.6,
+        "nose": 0.55,
+        "skin": 0.7,
+        "left_eye": 0.4,
+        "right_eye": 0.4
+    }
+
+    feature_notes = {
+        "left_eye": (
+            "Your left eye may show signs of fatigue or irritation. "
+            "Consider getting enough rest or checking for allergies or dryness."
+        ),
+        "right_eye": (
+            "Your right eye may appear irritated or tired. "
+            "This can be caused by lack of sleep, eye strain, or mild infections like conjunctivitis."
+        ),
+        "nose": (
+            "Your nose region may show symptoms of congestion or sinus pressure. "
+            "This could relate to a cold, flu, or sinusitis — especially if you're also experiencing headaches or fatigue."
+        ),
+        "mouth": (
+            "Your mouth area may show signs of irritation. "
+            "Swelling, dryness, or small ulcers could be caused by allergies or dehydration."
+        ),
+        "skin": (
+            "Your skin seems to show unusual texture or color. "
+            "This could be due to stress, acne, or skin conditions like eczema or rosacea."
+        )
+    }
 
     for feat in face_features:
         p = tmpdir / f"{stem}_{feat}.png"
@@ -119,7 +149,8 @@ def predict():
         arr = np.array(Image.open(str(crop)))
         x   = preprocess_array(arr)
         p   = float(models[feat].predict(x)[0][0])
-        label = "Sick" if p > 0.5 else "Healthy"
+        threshold = thresholds.get(feat, 0.5)
+        label = "Sick" if p > threshold else "Healthy"
 
         votes.append(label)
         confidence_scores[feat] = p
@@ -129,10 +160,16 @@ def predict():
     healthy_votes = votes.count("Healthy")
     final_result = "Sick" if sick_votes > healthy_votes else "Healthy"
 
+    recommendations = []
+
     # DEBUG: show what each “doctor” said and the final tally
     print("=== VOTING DEBUG ===")
     for feature, score in confidence_scores.items():
-        vote = "Sick" if score != "Error" and score > 0.5 else "Healthy"
+        threshold = thresholds.get(feature, 0.5)
+        vote = "Sick" if score != "Error" and score > threshold else "Healthy"
+        if isinstance(score, float) and score > thresholds[feature]:
+            if feature in feature_notes:
+                recommendations.append(feature_notes[feature])
         print(f" - {feature}: prob={score} → vote={vote}")
     print(f" Sick votes: {sick_votes}, Healthy votes: {healthy_votes}")
     print(f" FINAL result: {final_result}")
@@ -144,7 +181,8 @@ def predict():
             "Sick": sick_votes,
             "Healthy": healthy_votes
         },
-        "confidences": confidence_scores
+        "confidences": confidence_scores,
+        "notes": recommendations
     })
 
 if __name__ == "__main__":
