@@ -115,6 +115,7 @@ function handleFileUpload(e) {
           sessionStorage.setItem("predictionConfidence",json.confidence);
           sessionStorage.setItem("votes", JSON.stringify(json.votes));
           sessionStorage.setItem("confidences", JSON.stringify(json.confidences));
+          sessionStorage.setItem("notes", JSON.stringify(json.notes))
 
           window.location.href = "/result";
         })

@@ -19,6 +19,8 @@
         <h2 id="prediction-output">You are …</h2>
         <p id="vote-breakdown"></p>
         <ul id="confidence-list"></ul>
+        <h3>Recommendations</h3>
+        <ul id="notes-list"></ul>
     </div>
 
     <script>
@@ -58,6 +60,19 @@
               ul.appendChild(li);
             });
           }
+
+        const notesList = document.getElementById("notes-list");
+        const notesStr  = sessionStorage.getItem("notes") || "[]";
+        let notes = [];
+        try {
+            notes = JSON.parse(notesStr);
+        } catch (e) { /* ignore malformed */ }
+
+        notes.forEach(txt => {
+            const li = document.createElement("li");
+            li.innerText = txt;
+            notesList.appendChild(li);
+        });
         });
     </script>   
 </body>
