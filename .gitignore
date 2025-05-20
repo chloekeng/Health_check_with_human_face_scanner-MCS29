@@ -44,4 +44,5 @@ augment/output/checkpoints/*
 # ignore virtual environment 
 venv310
 .venv
+venv/*
 !static/images/*
