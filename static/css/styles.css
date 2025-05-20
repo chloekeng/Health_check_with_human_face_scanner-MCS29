@@ -73,7 +73,6 @@ button {
     max-width: 100%;     /* Shrinks image if too wide */
     max-height: 100%;    /* Shrinks image to fit box height */
     object-fit: contain; /* Keeps image proportions */
-    border-radius: 50%;  /* Makes the image oval/circle if it's square */
     display: block;
     margin: 0 auto;
 }

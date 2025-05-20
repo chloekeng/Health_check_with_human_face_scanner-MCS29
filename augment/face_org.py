@@ -98,13 +98,18 @@ def readAndResize(image_path, target_size=512):
 
 
 def exportImage(status, file_name, part_name, img):
-    path_to_exp = "data/parsed/" + status + "/" + file_name + "_" + part_name
+    # path_to_exp = "data/parsed/" + status + "/" + file_name + "_" + part_name
+    
+    # 1) ensure output folder exists
+    out_dir = os.path.join("data", "parsed", status)
+    os.makedirs(out_dir, exist_ok=True)
+
+    # 2) build a filename with .png extension
+    path_to_exp = os.path.join(out_dir, f"{file_name}_{part_name}.png")
 
     fig = plt.figure(frameon=False)
-
     plt.axis("off")
-
-    imgplot = plt.imshow(img)
+    plt.imshow(img)
     plt.savefig(path_to_exp, bbox_inches='tight',
                 transparent=True, pad_inches=0)
     plt.close(fig)
