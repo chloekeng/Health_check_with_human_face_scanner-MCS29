@@ -17,13 +17,21 @@ app = Flask(__name__,
 CORS(app)
 
 # Facial features to vote on
-# face_features = ["mouth", "nose", "skin", "left_eye", "right_eye"]
 face_features = ["mouth", "nose", "skin", "left_eye", "right_eye"]
+
+best_models = {
+    "left_eye": 8,
+    "mouth": 5,
+    "nose": 4, 
+    "right_eye": 7,
+    "skin": 4
+}
 
 # Load models for each region
 models = {}
 for feature in face_features:
-    pattern = os.path.join("categorization", "model_saves", feature, "model_*.h5")
+    fold = best_models[feature]
+    pattern = os.path.join("categorization", "model_saves", feature, f"model_{fold}.h5")
     # model_path = f'categorization/model_saves/{feature}/model_*.h5'
     candidates = glob.glob(pattern)
     if not candidates:
