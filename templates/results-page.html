@@ -1,90 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Result</title>
-    <!-- <link rel="stylesheet" href="styles.css"> Link to CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Result</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
 </head>
-
-<header>
+<body>
+  <header>
     <img
-    src="{{ url_for('static', filename='images/logo.png') }}"
-    alt="Health Scan AI logo"
-    class="logo-icon"
+      src="{{ url_for('static', filename='images/logo.png') }}"
+      alt="Health Scan AI logo"
+      class="logo-icon"
     />
     <span>Health Scan AI</span>
-</header>
-<hr>
+  </header>
+  <hr />
 
-<body>
-    <div class="result-container">
-        <h2><b>Results:</b></h2>
+  <div class="result-container">
+    <h2><b>Results:</b></h2>
 
-        <h1 id="prediction-output">You are …</h1>
+    <!-- Canvas to show annotated image -->
+    <canvas id="annotation-canvas"
+            style="display:block; margin: 0 auto; max-width:100%; border:1px solid #ccc;"></canvas>
 
-        <!-- <p id="vote-breakdown"></p>
-        <ul id="confidence-list"></ul> -->
+    <h1 id="prediction-output">You are …</h1>
+    <p id="vote-breakdown"></p>
+    <ul id="confidence-list"></ul>
 
-        <div id="advice-section" class="hidden">
-            <h3>Recommendations</h3>
-            <ul id="notes-list"></ul>
-        </div>
+    <div id="advice-section" class="hidden">
+      <h3>Recommendations</h3>
+      <ul id="notes-list"></ul>
     </div>
+  </div>
 
-    <!-- <script>
-        document.addEventListener("DOMContentLoaded", () => {
-          const result   = sessionStorage.getItem("predictionResult");
-          const conf     = sessionStorage.getItem("predictionConfidence");
-          const votesStr = sessionStorage.getItem("votes");
-          const confsStr = sessionStorage.getItem("confidences");
-        
-          // render final line
-          const output = document.getElementById("prediction-output");
-          if (result && conf) {
-            output.innerText =
-            //   `You are ${result} (confidence: ${parseFloat(conf).toFixed(2)})`;
-            `You are ${result}`;
-          } else {
-            output.innerText = "No prediction available. Please try again.";
-            return;
-          }
-        
-          // votes breakdown
-          let votes = { Sick: 0, Healthy: 0 };
-          if (votesStr) {
-            try { votes = JSON.parse(votesStr); } catch (e) { /* ignore */ }
-          }
-          document.getElementById("vote-breakdown").innerText =
-            `Votes → Sick: ${votes.Sick}, Healthy: ${votes.Healthy}`;
-        
-          // per-feature confidences
-          const ul = document.getElementById("confidence-list");
-          if (confsStr) {
-            let confs = {};
-            try { confs = JSON.parse(confsStr); } catch (e) { /* ignore */ }
-            Object.entries(confs).forEach(([feature, score]) => {
-              const li = document.createElement("li");
-              li.innerText = `${feature}: ${parseFloat(score).toFixed(2)}`;
-              ul.appendChild(li);
-            });
-          }
-
-        const notesList = document.getElementById("notes-list");
-        const notesStr  = sessionStorage.getItem("notes") || "[]";
-        let notes = [];
-        try {
-            notes = JSON.parse(notesStr);
-        } catch (e) { /* ignore malformed */ }
-
-        notes.forEach(txt => {
-            const li = document.createElement("li");
-            li.innerText = txt;
-            notesList.appendChild(li);
-        });
-        });
-    </script>    -->
-    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+  <!-- your existing logic lives here -->
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>
