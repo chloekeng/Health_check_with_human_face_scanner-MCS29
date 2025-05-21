@@ -59,8 +59,74 @@ document.addEventListener('DOMContentLoaded', function() {
         })
     }
 
-    if (popup) {
-        popup.style.display = 'flex';
+    setTimeout(() => {
+        if (popup) {
+            popup.style.display = 'flex';
+        }
+    }, 500);
+
+    //==============result section================
+    const output = document.getElementById("prediction-output");
+    // const ul = document.getElementById("confidence-list");
+    // const votesBreak = document.getElementById("vote-breakdown");
+    const adviceSec = document.getElementById("advice-section")
+    const notesList = document.getElementById("notes-list");
+
+    if (!output || !adviceSec || !notesList) {
+        return;
+    }
+
+    const result   = sessionStorage.getItem("predictionResult");
+    const notesStr  = sessionStorage.getItem("notes") || "[]";
+
+    // render final line
+    if (result == "Healthy") {
+        output.innerText = "You are healthy!";
+        output.classList.add("healthy");
+    } else if (result == "Sick") {
+        output.innerText = "You are sick!";
+        output.classList.add("sick");
+    } else {
+        output.innerText = "No prediction available.";
+    }
+
+    // // votes breakdown
+    // let votes = { Sick: 0, Healthy: 0 };
+    // if (votesStr) {
+    //     try { votes = JSON.parse(votesStr); } catch (e) { /* ignore */ }
+    //     }
+    // votesBreak.innerText = `Votes → Sick: ${votes.Sick}, Healthy: ${votes.Healthy}`;
+
+    // // per-feature confidences
+    // if (confsStr) {
+    //     try { 
+    //         const confs = JSON.parse(confsStr); 
+    //         Object.entries(confs).forEach(([feature, score]) => {
+    //             const li = document.createElement("li");
+    //             li.innerText = `${feature}: ${parseFloat(score).toFixed(2)}`;
+    //             ul.appendChild(li);
+    //         });
+    //     } catch {}
+    // }
+
+    let notes = []
+    try {
+        const parsed = JSON.parse(notesStr);
+        // only accept it if it really is an array
+        if (Array.isArray(parsed)) {
+            notes = parsed;
+        }
+    } catch (e) {
+        console.warn("Could not parse notes, defaulting to empty:", e);
+    }
+
+    if (notes.length) {
+        adviceSec.classList.remove("hidden");
+        notes.forEach(txt => {
+            const li = document.createElement("li");
+            li.innerText = txt;
+            notesList.appendChild(li);
+        }) 
     }
 })
 

@@ -15,15 +15,20 @@
 
 <body>
     <div class="result-container">
-        <p><b>Results:</b></p>
-        <h2 id="prediction-output">You are …</h2>
-        <p id="vote-breakdown"></p>
-        <ul id="confidence-list"></ul>
-        <h3>Recommendations</h3>
-        <ul id="notes-list"></ul>
+        <h2><b>Results:</b></h2>
+
+        <h1 id="prediction-output">You are …</h1>
+
+        <!-- <p id="vote-breakdown"></p>
+        <ul id="confidence-list"></ul> -->
+
+        <div id="advice-section" class="hidden">
+            <h3>Recommendations</h3>
+            <ul id="notes-list"></ul>
+        </div>
     </div>
 
-    <script>
+    <!-- <script>
         document.addEventListener("DOMContentLoaded", () => {
           const result   = sessionStorage.getItem("predictionResult");
           const conf     = sessionStorage.getItem("predictionConfidence");
@@ -74,6 +79,7 @@
             notesList.appendChild(li);
         });
         });
-    </script>   
+    </script>    -->
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>

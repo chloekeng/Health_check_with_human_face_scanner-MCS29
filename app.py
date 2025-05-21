@@ -131,7 +131,7 @@ def predict():
         ),
         "mouth": (
             "Your mouth area may show signs of irritation. "
-            "Swelling, dryness, or small ulcers could be caused by allergies or dehydration."
+            "Swelling, or dryness could be caused by allergies or dehydration."
         ),
         "skin": (
             "Your skin seems to show unusual texture or color. "
