@@ -2,6 +2,10 @@ function startScan() {
     window.location.href = "/scan";
 }
 
+function retry() {
+    window.location.href = "/scan";
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     // file upload
     const uploadLink = document.getElementById('upload-link');
@@ -203,10 +207,6 @@ function closeErrorPopup() {
     if (popup) {
         popup.classList.add("hidden");
     }
-}
-
-function retry() {
-    window.location.href = "/scan";
 }
 
 
