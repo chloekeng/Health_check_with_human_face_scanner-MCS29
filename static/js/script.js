@@ -190,6 +190,26 @@ function closePrivacyNotice() {
     }
 }
 
+function showErrorPopup() {
+    const popup = document.getElementById("error-popup");
+    if (popup) {
+        popup.classList.remove("hidden");
+        popup.style.display = 'flex';
+    }
+}
+
+function closeErrorPopup() {
+    const popup = document.getElementById("error-popup");
+    if (popup) {
+        popup.classList.add("hidden");
+    }
+}
+
+function retry() {
+    window.location.href = "/scan";
+}
+
+
 function handleFileUpload(e) {
     const file = e.target.files[0]
     if (!file) return;
@@ -204,6 +224,7 @@ function handleFileUpload(e) {
     document.querySelector(".face-scan-container").remove();
     document.getElementById("privacy-popup")?.remove();
     document.querySelectorAll('body > p').forEach(el => el.remove());
+    document.getElementById("camera-button")?.remove();
 
     const loader = document.createElement("div")
     loader.className = "analyzing-container";

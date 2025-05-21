@@ -149,6 +149,11 @@ button {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
+#error-popup {
+    position: fixed;
+    align-items: center;
+}
+
 /* I Accept button */
 .close-button {
   position: absolute;

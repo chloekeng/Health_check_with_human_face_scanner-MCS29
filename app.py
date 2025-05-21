@@ -10,6 +10,8 @@ from augment.face_org import extractFace, faceCascade, detector, predictor, FACI
 from categorization.box_utils import get_face_boxes
 from werkzeug.utils import secure_filename
 from pathlib import Path
+from augment.alter_images import gaussian_blur, increase_brightness, adjust_gamma
+import cv2
 
 
 app = Flask(__name__, 
@@ -33,7 +35,6 @@ models = {}
 for feature in face_features:
     fold = best_models[feature]
     pattern = os.path.join("categorization", "model_saves", feature, f"model_{fold}.h5")
-    # model_path = f'categorization/model_saves/{feature}/model_*.h5'
     candidates = glob.glob(pattern)
     if not candidates:
         raise FileNotFoundError(f"No models found for '{feature}', looked for {pattern}")
@@ -98,6 +99,16 @@ def predict():
 
     print("→ Saved upload to:", on_disk)
     print("→ tmpdir contents:", list(tmpdir.iterdir()))
+
+    img = cv2.imread(str(on_disk))
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+
+    # img = adjust_gamma(img, gamma = 0.8)
+    img = increase_brightness(img, value=5)
+    # img = gaussian_blur(img, 3)
+
+    img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
+    cv2.imwrite(str(on_disk), img)
 
     # 2) run your face-cropper
     cropped = extractFace(

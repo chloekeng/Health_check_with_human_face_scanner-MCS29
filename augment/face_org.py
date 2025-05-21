@@ -99,7 +99,7 @@ def readAndResize(image_path, target_size=512):
 
 def exportImage(status, file_name, part_name, img):
     # path_to_exp = "data/parsed/" + status + "/" + file_name + "_" + part_name
-    
+
     # 1) ensure output folder exists
     out_dir = os.path.join("data", "parsed", status)
     os.makedirs(out_dir, exist_ok=True)
