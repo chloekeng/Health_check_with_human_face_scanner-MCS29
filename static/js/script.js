@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (popup) {
             popup.style.display = 'flex';
         }
-    }, 500);
+    }, 700);
 
     //==============result section================
     const output = document.getElementById("prediction-output");
@@ -145,50 +145,50 @@ function handleFileUpload(e) {
         alert("Please upload a JPEG or PNG image.");
         e.target.value = "";
         return;
-      }
+    }
 
-      // show spinner overlay on THIS page
-    document.querySelector(".face-scan-container").style.display = "none";
+    //remove scan container & show loader in place
+    document.querySelector(".face-scan-container").remove();
     document.getElementById("privacy-popup")?.remove();
-    const loader = document.createElement("div");
+    document.querySelectorAll('body > p').forEach(el => el.remove());
+
+    const loader = document.createElement("div")
     loader.className = "analyzing-container";
-    loader.innerHTML =
-        `<div class="loader"></div>
-        <h1>AI analysing…</h1>
+    loader.innerHTML = `
+        <div class="loader"></div>
+        <h1>AI analysing...</h1>
         <p>It will take some time...</p>`;
-    document.body.appendChild(loader);
+    document.body.appendChild(loader)
 
-    
-      // show loading page
-    //   window.location.href = "/analyse";
-    
-      const data = new FormData();
-      data.append("file", file);
-    
-      fetch("/predict", { method: "POST", body: data })
-        .then(res =>
-            res.json().then(payload => {
-            if (!res.ok) {
-                // server sent you a JSON error message
-                throw new Error(payload.error || `${res.status} ${res.statusText}`);
-            }
-            return payload;
-            })
-        )
-        .then(json => {
-          // stash & go to results
-          sessionStorage.setItem("predictionResult",    json.result);
-          sessionStorage.setItem("predictionConfidence",json.confidence);
-          sessionStorage.setItem("votes", JSON.stringify(json.votes));
-          sessionStorage.setItem("confidences", JSON.stringify(json.confidences));
-          sessionStorage.setItem("notes", JSON.stringify(json.notes))
+    const data = new FormData();
+    data.append("file", file);
 
-          window.location.href = "/result";
+    fetch("/predict", { method: "POST", body: data })
+    .then(res =>
+        res.json().then(payload => {
+        if (!res.ok) {
+            // server sent you a JSON error message
+            throw new Error(payload.error || `${res.status} ${res.statusText}`);
+        }
+        return payload;
         })
-        .catch(err => {
-          console.error("Prediction error:", err);
-          alert("Something went wrong while predicting the image.");
-        });
+    )
+    .then(json => {
+        // stash & go to results
+        sessionStorage.setItem("predictionResult",    json.result);
+        sessionStorage.setItem("predictionConfidence",json.confidence);
+        sessionStorage.setItem("votes", JSON.stringify(json.votes));
+        sessionStorage.setItem("confidences", JSON.stringify(json.confidences));
+        sessionStorage.setItem("notes", JSON.stringify(json.notes))
+
+        setTimeout(() => {
+        window.location.href = "/result";
+        }, 1000);
+    })
+    .catch(err => {
+        console.error("Prediction error:", err);
+        alert("Something went wrong while predicting the image.");
+    });
 }
 
 // function accessCamera() {
