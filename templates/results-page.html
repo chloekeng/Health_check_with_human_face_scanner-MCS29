@@ -8,12 +8,14 @@
 </head>
 <body>
   <header>
+    <a href="{{ url_for('home') }}" class="header-link">
     <img
       src="{{ url_for('static', filename='images/logo.png') }}"
       alt="Health Scan AI logo"
       class="logo-icon"
     />
     <span>Health Scan AI</span>
+  </a>
   </header>
   <hr />
 
@@ -29,7 +31,7 @@
     <ul id="confidence-list"></ul>
 
     <div id="advice-section" class="hidden">
-      <h3>Recommendations</h3>
+      <h3>Analysis:</h3>
       <ul id="notes-list"></ul>
     </div>
   

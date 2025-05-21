@@ -7,6 +7,21 @@ header {
     font-weight: bold;
 }
 
+.header-link {
+  display: inline-flex;
+  justify-content: left;
+  align-items: center;
+  text-decoration: none;
+  /* padding: 15px 20px; */
+    font-size: 20px;
+    font-weight: bold;
+  color: inherit; /* keep the same text color */
+}
+
+.header-link .logo-icon {
+  margin-right: 8px;
+}
+
 .logo-icon {
     width: 32px;
     height: auto;

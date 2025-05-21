@@ -8,13 +8,15 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <header>
-        <img
-        src="{{ url_for('static', filename='images/logo.png') }}"
-        alt="Health Scan AI logo"
-        class="logo-icon"
-        />
-        <span>Health Scan AI</span>
-    </header>
+  <a href="{{ url_for('home') }}" class="header-link">
+    <img
+      src="{{ url_for('static', filename='images/logo.png') }}"
+      alt="Health Scan AI logo"
+      class="logo-icon"
+    />
+    <span>Health Scan AI</span>
+  </a>
+</header>
 <hr>    
 <body>
     
