@@ -147,6 +147,11 @@ button {
     position: relative;
 }
 
+#error-popup {
+    position: fixed;
+    align-items: center;
+}
+
 /* X button */
 .close-button {
     position: absolute;

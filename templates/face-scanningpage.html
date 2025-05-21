@@ -12,9 +12,7 @@
     <div id="privacy-popup" class ="popup-box">
         <div class="popup-content">
             <span class="close-button" onclick="closePrivacyNotice()">×</span>
-            <p>Your privacy is our top priority. The images captured are used solely for health analysis and are not stored or shared without your consent.
-                All data is encrypted and handled with strict confidentiality in accordance with our [Terms of Service] and [Privacy Policy].
-            </p>
+            <p>Your privacy is our top priority. The images captured are used solely for health analysis and are not stored or shared without your consent.</p>
         </div>
     </div>
 
@@ -43,6 +41,14 @@
     </p>
 
     <canvas id="photo-canvas" style="display: none;"></canvas>
+
+    <div id="error-popup" class="popup-box hidden">
+        <div class="popup-content">
+            <h2>Error detecting face</h2>
+            <p>Please ensure your face is clearly visible, facing forward, and well-lit. Try again with another image.</p>
+            <span class="close-button" onclick="retry()">×</span>
+        </div>
+    </div>
 
     <!-- <div id="preview-container">
         <img id="preview-image" style="display: none; max-width: 200px; margin-top: 20px;">
