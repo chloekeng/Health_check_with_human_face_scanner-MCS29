@@ -241,13 +241,17 @@ function handleFileUpload(e) {
             window.location.href = "/result";
         })
         .catch(err => {
-            console.error("Prediction error:", err);
-            alert(err.message || "Something went wrong while predicting the image.");
+        console.error("Prediction error:", err);
+        const msg = err.message || "Something went wrong.";
+
+        if (msg === "No face detected") {
+            alert("No face detected. Please hold your face clearly in frame and try again.");
+            // after they click OK, send them back to /scan
+            window.location.href = "/scan";
+        } else {
+            alert(msg);
+        }
         });
-
-
-    
-
 }
 
 // function accessCamera() {
