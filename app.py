@@ -94,7 +94,8 @@ def predict():
     try:
         boxes = get_face_boxes(str(on_disk))
     except Exception as e:
-        return jsonify(error=f"Box extraction failed: {e}"), 400
+        # tell the client “No face detected” so it can pop up & redirect
+        return jsonify(error="No face detected"), 400
 
     print("→ Saved upload to:", on_disk)
     print("→ tmpdir contents:", list(tmpdir.iterdir()))

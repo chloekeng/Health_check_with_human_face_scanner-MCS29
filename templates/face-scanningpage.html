@@ -7,12 +7,32 @@
     <!-- <link rel="stylesheet" href="styles.css"> Link to CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
-
+<header>
+        <img
+        src="{{ url_for('static', filename='images/logo.png') }}"
+        alt="Health Scan AI logo"
+        class="logo-icon"
+        />
+        <span>Health Scan AI</span>
+    </header>
+<hr>    
 <body>
-    <div id="privacy-popup" class ="popup-box">
-        <div class="popup-content">
-            <span class="close-button" onclick="closePrivacyNotice()">×</span>
-            <p>Your privacy is our top priority. The images captured are used solely for health analysis and are not stored or shared without your consent.</p>
+    
+
+    <!-- Popup wrapper (flex centering container) -->
+    <div id="privacy-popup" class="popup-box">
+        <!-- The light-grey content card -->
+        <div class="popup-content" style="background-color: #f0f0f0;">
+            <p style="color: #4a4a4a;">
+            Your privacy is our top priority. The images captured are used solely
+            for health analysis and are not stored or shared without your consent.
+            All data is encrypted and handled with strict confidentiality in
+            accordance with our <a href="#">Terms of Service</a> and
+            <a href="#">Privacy Policy</a>.
+            </p>
+            <button class="close-button-bottom" onclick="closePrivacyNotice()">
+            I Accept
+            </button>
         </div>
     </div>
 
