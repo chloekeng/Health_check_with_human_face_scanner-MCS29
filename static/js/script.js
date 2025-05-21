@@ -66,31 +66,64 @@ document.addEventListener('DOMContentLoaded', function() {
     }, 700);
 
     //==============result section================
-    const output = document.getElementById("prediction-output");
-    // const ul = document.getElementById("confidence-list");
-    // const votesBreak = document.getElementById("vote-breakdown");
-    const adviceSec = document.getElementById("advice-section")
-    const notesList = document.getElementById("notes-list");
+    const output     = document.getElementById("prediction-output");
+    const votesBreak = document.getElementById("vote-breakdown");
+    const ul         = document.getElementById("confidence-list");
+    const adviceSec  = document.getElementById("advice-section");
+    const notesList  = document.getElementById("notes-list");
 
     if (!output || !adviceSec || !notesList) {
         return;
     }
 
-    const result   = sessionStorage.getItem("predictionResult");
-    const notesStr  = sessionStorage.getItem("notes") || "[]";
+    const result    = sessionStorage.getItem("predictionResult");
+    const votesStr  = sessionStorage.getItem("votes")       || "{}";
+    const confsStr  = sessionStorage.getItem("confidences") || "{}";
+    const notesStr  = sessionStorage.getItem("notes")       || "[]";
+
 
     // render final line
     if (result == "Healthy") {
-        output.innerText = "You are healthy!";
+        output.innerText = "You’re likely healthy!";
         output.classList.add("healthy");
     } else if (result == "Sick") {
-        output.innerText = "You are sick!";
+        output.innerText = "You might be sick!";
         output.classList.add("sick");
     } else {
         output.innerText = "No prediction available.";
     }
 
-    let notes = []
+    // votes breakdown
+    try {
+      const votes = JSON.parse(votesStr);
+      votesBreak.innerText = `Votes → Sick: ${votes.Sick}, Healthy: ${votes.Healthy}`;
+    } catch (e) {
+      console.warn("Could not parse votes:", e);
+    }
+
+    // per-feature confidences
+    try {
+      const confs = JSON.parse(confsStr);
+      const prettyNames = {
+        mouth:      "Mouth area",
+        nose:       "Nose region",
+        skin:       "Facial skin",
+        left_eye:   "Left eye area",
+        right_eye:  "Right eye area"
+        };
+
+        Object.entries(confs).forEach(([feature, score]) => {
+            const li = document.createElement("li");
+            const name = prettyNames[feature] || feature;
+            const percent = (parseFloat(score) * 100).toFixed(1);
+            li.innerHTML = `<strong>${name}</strong>: ${percent}% chance of concern`;
+        ul.appendChild(li);
+        });
+    } catch (e) {
+      console.warn("Could not parse confidences:", e);
+    }
+
+    let notes = [];
     try {
         const parsed = JSON.parse(notesStr);
         // only accept it if it really is an array
@@ -109,7 +142,46 @@ document.addEventListener('DOMContentLoaded', function() {
             notesList.appendChild(li);
         }) 
     }
-})
+    // ── debug log ──
+    console.log("📦 boxes:", JSON.parse(sessionStorage.getItem("boxes")||"{}"));
+    console.log("🏷 labels:", JSON.parse(sessionStorage.getItem("featureLabels")||"{}"));
+
+    // ── annotation ──
+    const canvas = document.getElementById("annotation-canvas");
+    if (!canvas) return;
+
+    // pull boxes, labels, confidences
+    const boxes  = JSON.parse(sessionStorage.getItem("boxes")        || "{}");
+    const labels = JSON.parse(sessionStorage.getItem("featureLabels")|| "{}");
+    const confs  = JSON.parse(sessionStorage.getItem("confidences")  || "{}");
+    // map your short keys to full feature names
+    const keyMap = { left: "left_eye", right: "right_eye" };
+
+    const img = new Image();
+    img.src = `/tmp/${sessionStorage.getItem("uploadedFilename") || "capture.png"}`;
+    img.onload = () => {
+        const ctx = canvas.getContext("2d");
+        canvas.width  = img.naturalWidth;
+        canvas.height = img.naturalHeight;
+        ctx.drawImage(img, 0, 0);
+
+        ctx.lineWidth   = 4;
+        ctx.strokeStyle = "red";
+        ctx.font        = "20px sans-serif";
+        ctx.fillStyle   = "red";
+
+        Object.entries(boxes).forEach(([rawFeat, rect]) => {
+        const feat = keyMap[rawFeat] || rawFeat;
+        if (labels[feat] === "Sick") {
+            const [x,y,w,h] = rect;
+            const scoreText = parseFloat(confs[feat] || 0).toFixed(2);
+            ctx.strokeRect(x, y, w, h);
+            ctx.fillText(scoreText, x, y - 6);
+        }
+        });
+    };
+});
+
 
 function closePrivacyNotice() {
     const popup = document.getElementById('privacy-popup');
@@ -165,30 +237,124 @@ function handleFileUpload(e) {
     const data = new FormData();
     data.append("file", file);
 
-    fetch("/predict", { method: "POST", body: data })
-    .then(res =>
-        res.json().then(payload => {
-        if (!res.ok) {
-            // server sent you a JSON error message
-            throw new Error(payload.error || `${res.status} ${res.statusText}`);
-        }
-        return payload;
+    fetch("/predict", {
+        method: "POST",
+        body: data
         })
-    )
-    .then(json => {
-        // stash & go to results
-        sessionStorage.setItem("predictionResult",    json.result);
-        sessionStorage.setItem("predictionConfidence",json.confidence);
-        sessionStorage.setItem("votes", JSON.stringify(json.votes));
-        sessionStorage.setItem("confidences", JSON.stringify(json.confidences));
-        sessionStorage.setItem("notes", JSON.stringify(json.notes))
+        .then(async res => {
+            const payload = await res.json().catch(() => ({}));
+            if (!res.ok) {
+            // server‐sent JSON “error” field or a fallback
+            throw new Error(payload.error || `${res.status} ${res.statusText}`);
+            }
+            return payload;
+        })
+        .then(json => {
+            // stash & go to results
+            sessionStorage.setItem("predictionResult",     json.result);
+            sessionStorage.setItem("predictionConfidence", json.confidence);
+            sessionStorage.setItem("votes",                JSON.stringify(json.votes));
+            sessionStorage.setItem("confidences",          JSON.stringify(json.confidences));
+            sessionStorage.setItem("notes",                JSON.stringify(json.notes));
+            sessionStorage.setItem("featureLabels",       JSON.stringify(json.feature_labels)); // <<< NEW
+            sessionStorage.setItem("boxes",                JSON.stringify(json.boxes));
+            sessionStorage.setItem("uploadedFilename",     json.uploadedFilename || "capture.png");
+            window.location.href = "/result";
+        })
+        .catch(err => {
+            console.error("Prediction error:", err);
+            alert(err.message || "Something went wrong while predicting the image.");
+        });
 
-        setTimeout(() => {
-        window.location.href = "/result";
-        }, 1000);
-    })
-    .catch(err => {
-        console.error("Prediction error:", err);
-        showErrorPopup();
-    });
+
+    
+
 }
+
+// function accessCamera() {
+//     const video = document.getElementById('camera-activate');
+//     const overlayText = document.getElementById('overlay-text');
+
+//     navigator.mediaDevices.getUserMedia({video: true})
+//     .then(function(stream) {
+//         video.srcObject = stream;
+//         video.style.display = 'block';
+//         overlayText.style.display = 'none';
+//     })
+//     .catch(function(error) {
+//         console.error("Error accessing the camera: ", error);
+//         alert("Unable to access camera");
+//     })
+// }
+
+// document.getElementById('fileUpload').addEventListener('change', e => {
+//     const file = e.target.files[0];
+//     if (!file) return;
+//     if (!['image/jpeg','image/png'].includes(file.type)) {
+//       alert("upload jpeg/png");
+//       return;
+//     }
+//     // show loading page
+//     window.location.href = "/analyse";
+  
+//     const data = new FormData();
+//     data.append("file", file);
+  
+//     fetch("/predict", { method:"POST", body:data })
+//       .then(r => r.json())
+//       .then(d => {
+//         sessionStorage.setItem("predictionResult",    d.result);
+//         sessionStorage.setItem("predictionConfidence", d.confidences[d.result.toLowerCase()] );
+//         window.location.href = "/result";
+//       })
+//       .catch(err => {
+//         console.error(err);
+//         alert("Prediction failed");
+//       });
+//   });
+  
+
+
+
+// captureButton.addEventListener('click', function() {
+//     const context = canvas.getContext('2d');
+//     canvas.width = video.videoWidth;
+//     canvas.height = video.videoHeight;
+//     context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+//     stream.getTracks().forEach(function(track) {
+//         track.stop();
+//     })
+
+//     video.style.display = 'none';
+//     canvas.style.display = 'block';
+//     captureButton.style.display = 'none';
+
+//     setTimeout(function() {
+//         window.location.href = "analysing-page.html";
+//     }, 1500);
+// })
+
+
+// window.triggerUpload = function() {
+//     document.getElementById('fileUpload').click();
+// };
+
+// document.getElementById('fileUpload').addEventListener('change', function(event) {
+//     const file = event.target.files[0];
+
+//     if (file) {
+//         if (file.type === "image/jpeg" || file.type === "image/png") {
+//             const reader = new FileReader();
+//             reader.onload = function(e) {
+//                 const previewImage = document.getElementById('preview-image');
+//                 previewImage.src = e.target.result;
+//                 previewImage.style.display = 'block';
+//             }
+//             reader.readAsDataURL(file);
+//         } else {
+//             alert("Please upload a valid image (JPEG or PNG) ")
+//             event.target.value = "";
+//         }
+//     }
+// })

@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, send_from_directory
 from flask_cors import CORS
 import tensorflow as tf
 import numpy as np
@@ -6,7 +6,8 @@ from PIL import Image
 import glob, os
 import matplotlib
 matplotlib.use("Agg")
-from augment.face_org import extractFace, faceCascade, detector, predictor
+from augment.face_org import extractFace, faceCascade, detector, predictor, FACIAL_LANDMARKS_IDXS
+from categorization.box_utils import get_face_boxes
 from werkzeug.utils import secure_filename
 from pathlib import Path
 from augment.alter_images import gaussian_blur, increase_brightness, adjust_gamma
@@ -88,6 +89,12 @@ def predict():
     tmpdir.mkdir(parents=True, exist_ok=True)
     on_disk = tmpdir / fname
     upload.save(on_disk)
+
+    # compute feature boxes for results pages ──
+    try:
+        boxes = get_face_boxes(str(on_disk))
+    except Exception as e:
+        return jsonify(error=f"Box extraction failed: {e}"), 400
 
     print("→ Saved upload to:", on_disk)
     print("→ tmpdir contents:", list(tmpdir.iterdir()))
@@ -194,15 +201,37 @@ def predict():
     print(f" FINAL result: {final_result}")
     print("====================")
 
+    # Convert boxes (and any other numpy scalars) to plain Python types
+    serializable_boxes = {
+        feat: [int(x), int(y), int(w), int(h)]
+        for feat, (x, y, w, h) in boxes.items()
+    }
+
+    feature_labels = {}
+    for feat, score in confidence_scores.items():
+        # same logic you used before to assign label
+        thresh = thresholds.get(feat, 0.5)
+        feature_labels[feat] = "Sick" if score > thresh else "Healthy"
+
     return jsonify({
         "result": final_result,
         "votes": {
             "Sick": sick_votes,
             "Healthy": healthy_votes
         },
+        "feature_labels": feature_labels, 
         "confidences": confidence_scores,
-        "notes": recommendations
+        "notes": recommendations,
+        "boxes": serializable_boxes
     })
+
+
+
+@app.route("/tmp/<path:filename>")
+def tmp_file(filename):
+    # Serves files from data/parsed/tmp/
+    return send_from_directory("data/parsed/tmp", filename)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
