@@ -32,8 +32,15 @@
       <h3>Recommendations</h3>
       <ul id="notes-list"></ul>
     </div>
-  </div>
+  
 
+      <!-- Scan Again button -->
+    <div style="text-align:center; margin-top: 20px;">
+      <button onclick="window.location.href='/scan'" class="scan-again-button">
+        Scan Again
+      </button>
+    </div>
+</div>
   <!-- your existing logic lives here -->
   <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
