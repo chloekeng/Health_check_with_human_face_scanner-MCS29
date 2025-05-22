@@ -10,7 +10,7 @@ from augment.face_org import extractFace, faceCascade, detector, predictor, FACI
 from categorization.box_utils import get_face_boxes
 from werkzeug.utils import secure_filename
 from pathlib import Path
-from augment.alter_images import gaussian_blur, increase_brightness, adjust_gamma
+from augment.alter_images import increase_brightness
 import cv2
 
 

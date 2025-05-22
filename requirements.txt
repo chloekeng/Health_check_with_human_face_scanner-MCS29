@@ -1,0 +1,10 @@
+Flask
+tensorflow
+Pillow
+flask_cors
+matplotlib
+imutils
+opencv-python
+dlib
+scikit-image
+numpy
