@@ -93,6 +93,10 @@ def predict():
     tmpdir.mkdir(parents=True, exist_ok=True)
     on_disk = tmpdir / fname
     upload.save(on_disk)
+    img = cv2.imread(str(on_disk))
+    if img is None:
+        return jsonify(error="Unsupported image format; please upload a JPEG or PNG"), 400
+    
     # force all uploads into a standard max dimension
     img = cv2.imread(str(on_disk))
     h, w = img.shape[:2]
@@ -155,8 +159,8 @@ def predict():
         "mouth": 0.6,
         "nose": 0.3,
         "skin": 0.7,
-        "left_eye": 0.5,
-        "right_eye": 0.5
+        "left_eye": 0.45,
+        "right_eye": 0.45
     }
 
     feature_notes = {

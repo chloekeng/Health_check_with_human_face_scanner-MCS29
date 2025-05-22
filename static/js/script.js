@@ -98,12 +98,31 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // votes breakdown
+    // try {
+    //   const votes = JSON.parse(votesStr);
+    //   votesBreak.innerText = `Votes → Sick: ${votes.Sick}, Healthy: ${votes.Healthy}`;
+    // } catch (e) {
+    //   console.warn("Could not parse votes:", e);
+    // }
+    // votes summary
     try {
-      const votes = JSON.parse(votesStr);
-      votesBreak.innerText = `Votes → Sick: ${votes.Sick}, Healthy: ${votes.Healthy}`;
-    } catch (e) {
-      console.warn("Could not parse votes:", e);
+    const votes = JSON.parse(votesStr);
+    const total = votes.Sick + votes.Healthy;
+    const flagged = votes.Sick;
+
+    if (flagged === 0) {
+        votesBreak.innerText = "All facial areas appear normal.";
+    } else if (flagged <= total / 2) {
+        votesBreak.innerText = 
+        `Noticeable concerns in ${flagged} of ${total} areas — overall likely healthy.`;
+    } else {
+        votesBreak.innerText = 
+        `Multiple areas (${flagged} of ${total}) showed potential issues — consider follow-up.`;
     }
+    } catch (e) {
+    console.warn("Could not parse votes:", e);
+    }
+
 
     // per-feature confidences
     try {
@@ -151,22 +170,22 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log("🏷 labels:", JSON.parse(sessionStorage.getItem("featureLabels")||"{}"));
 
     // ── annotation ──
-  const canvas = document.getElementById("annotation-canvas");
-  if (!canvas) return;
+    const canvas = document.getElementById("annotation-canvas");
+    if (!canvas) return;
 
-  // pull boxes, labels, confidences
-  const boxes  = JSON.parse(sessionStorage.getItem("boxes")        || "{}");
-  const labels = JSON.parse(sessionStorage.getItem("featureLabels")|| "{}");
-  const confs  = JSON.parse(sessionStorage.getItem("confidences")  || "{}");
-  const filename = sessionStorage.getItem("uploadedFilename") || "capture.png";
+    // pull boxes, labels, confidences
+    const boxes  = JSON.parse(sessionStorage.getItem("boxes")        || "{}");
+    const labels = JSON.parse(sessionStorage.getItem("featureLabels")|| "{}");
+    const confs  = JSON.parse(sessionStorage.getItem("confidences")  || "{}");
+    const filename = sessionStorage.getItem("uploadedFilename") || "capture.png";
 
-  // map your short keys to full feature names
-  const keyMap = { left: "left_eye", right: "right_eye" };
+    // map your short keys to full feature names
+    const keyMap = { left: "left_eye", right: "right_eye" };
 
-  const img = new Image();
-  // add cache‐buster so browser always fetches the fresh file
-  img.src = `/tmp/${filename}?_=${Date.now()}`;
-  img.onload = () => {
+    const img = new Image();
+    // add cache‐buster so browser always fetches the fresh file
+    img.src = `/tmp/${filename}?_=${Date.now()}`;
+    img.onload = () => {
     const ctx = canvas.getContext("2d");
     canvas.width  = img.naturalWidth;
     canvas.height = img.naturalHeight;
@@ -267,17 +286,25 @@ function handleFileUpload(e) {
             window.location.href = "/result";
         })
         .catch(err => {
-        console.error("Prediction error:", err);
-        const msg = err.message || "Something went wrong.";
+    console.error("Prediction error:", err);
+    const msg = err.message || "Something went wrong.";
 
-        if (msg === "No face detected") {
-            alert("No face detected. Please hold your face clearly in frame, ensure proper lighting and try again.");
-            // after they click OK, send them back to /scan
-            window.location.href = "/scan";
-        } else {
-            alert(msg);
-        }
-        });
+    if (msg === "No face detected") {
+        // no face‐detection alert + redirect
+        alert("No face detected. Please hold your face clearly in frame, ensure proper lighting and try again.");
+        window.location.href = "/scan";
+
+    } else if (msg.includes("Unsupported image format")) {
+        // handles HEIC or any cv2.imread failure
+        alert("Unsupported image format. Please upload a JPEG or PNG image.");
+        window.location.href = "/scan";
+
+    } else {
+        // any other error just shows its message
+        alert(msg);
+    }
+    });
+
 }
 
 // function accessCamera() {
