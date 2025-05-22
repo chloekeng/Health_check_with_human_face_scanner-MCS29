@@ -83,12 +83,28 @@ def predict():
         return jsonify({'error': 'No image uploaded'}), 400
     
     upload = request.files['file']
-    fname  = secure_filename(upload.filename)
-    stem   = Path(fname).stem
-    tmpdir = Path("data/parsed/tmp")
+
+    # 1) force a single fixed filename for every incoming image
+    stem     = "capture"
+    fname = f"{stem}.png"
+
+    # 2) save it into data/parsed/tmp/capture.png
+    tmpdir  = Path("data/parsed/tmp")
     tmpdir.mkdir(parents=True, exist_ok=True)
     on_disk = tmpdir / fname
     upload.save(on_disk)
+    # force all uploads into a standard max dimension
+    img = cv2.imread(str(on_disk))
+    h, w = img.shape[:2]
+    max_dim = 640
+    if max(h, w) > max_dim:
+        scale = max_dim / float(max(h, w))
+        new_w, new_h = int(w * scale), int(h * scale)
+        img = cv2.resize(img, (new_w, new_h), interpolation=cv2.INTER_AREA)
+    cv2.imwrite(str(on_disk), img)
+
+    app.logger.info(f"→ Saved upload to: {on_disk}")
+
 
     # compute feature boxes for results pages ──
     try:
@@ -137,10 +153,10 @@ def predict():
     confidence_scores = {}
     thresholds = {
         "mouth": 0.6,
-        "nose": 0.55,
+        "nose": 0.3,
         "skin": 0.7,
-        "left_eye": 0.4,
-        "right_eye": 0.4
+        "left_eye": 0.5,
+        "right_eye": 0.5
     }
 
     feature_notes = {
@@ -223,7 +239,9 @@ def predict():
         "feature_labels": feature_labels, 
         "confidences": confidence_scores,
         "notes": recommendations,
-        "boxes": serializable_boxes
+        "boxes": serializable_boxes,
+        "uploadedFilename": fname 
+
     })
 
 

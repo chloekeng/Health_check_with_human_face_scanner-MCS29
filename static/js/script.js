@@ -151,39 +151,42 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log("🏷 labels:", JSON.parse(sessionStorage.getItem("featureLabels")||"{}"));
 
     // ── annotation ──
-    const canvas = document.getElementById("annotation-canvas");
-    if (!canvas) return;
+  const canvas = document.getElementById("annotation-canvas");
+  if (!canvas) return;
 
-    // pull boxes, labels, confidences
-    const boxes  = JSON.parse(sessionStorage.getItem("boxes")        || "{}");
-    const labels = JSON.parse(sessionStorage.getItem("featureLabels")|| "{}");
-    const confs  = JSON.parse(sessionStorage.getItem("confidences")  || "{}");
-    // map your short keys to full feature names
-    const keyMap = { left: "left_eye", right: "right_eye" };
+  // pull boxes, labels, confidences
+  const boxes  = JSON.parse(sessionStorage.getItem("boxes")        || "{}");
+  const labels = JSON.parse(sessionStorage.getItem("featureLabels")|| "{}");
+  const confs  = JSON.parse(sessionStorage.getItem("confidences")  || "{}");
+  const filename = sessionStorage.getItem("uploadedFilename") || "capture.png";
 
-    const img = new Image();
-    img.src = `/tmp/${sessionStorage.getItem("uploadedFilename") || "capture.png"}`;
-    img.onload = () => {
-        const ctx = canvas.getContext("2d");
-        canvas.width  = img.naturalWidth;
-        canvas.height = img.naturalHeight;
-        ctx.drawImage(img, 0, 0);
+  // map your short keys to full feature names
+  const keyMap = { left: "left_eye", right: "right_eye" };
 
-        ctx.lineWidth   = 4;
-        ctx.strokeStyle = "red";
-        ctx.font        = "20px sans-serif";
-        ctx.fillStyle   = "red";
+  const img = new Image();
+  // add cache‐buster so browser always fetches the fresh file
+  img.src = `/tmp/${filename}?_=${Date.now()}`;
+  img.onload = () => {
+    const ctx = canvas.getContext("2d");
+    canvas.width  = img.naturalWidth;
+    canvas.height = img.naturalHeight;
+    ctx.drawImage(img, 0, 0);
 
-        Object.entries(boxes).forEach(([rawFeat, rect]) => {
-        const feat = keyMap[rawFeat] || rawFeat;
-        if (labels[feat] === "Sick") {
-            const [x,y,w,h] = rect;
-            const scoreText = parseFloat(confs[feat] || 0).toFixed(2);
-            ctx.strokeRect(x, y, w, h);
-            ctx.fillText(scoreText, x, y - 6);
-        }
-        });
-    };
+    ctx.lineWidth   = 4;
+    ctx.strokeStyle = "red";
+    ctx.font        = "20px sans-serif";
+    ctx.fillStyle   = "red";
+
+    Object.entries(boxes).forEach(([rawFeat, rect]) => {
+      const feat = keyMap[rawFeat] || rawFeat;
+      if (labels[feat] === "Sick") {
+        const [x,y,w,h] = rect;
+        const scoreText = parseFloat(confs[feat] || 0).toFixed(2);
+        ctx.strokeRect(x, y, w, h);
+        ctx.fillText(scoreText, x, y - 6);
+      }
+    });
+  };
 });
 
 
@@ -211,6 +214,8 @@ function closeErrorPopup() {
 
 
 function handleFileUpload(e) {
+    // ◀︎ Clear out any old prediction data
+    sessionStorage.clear();
     const file = e.target.files[0]
     if (!file) return;
 
