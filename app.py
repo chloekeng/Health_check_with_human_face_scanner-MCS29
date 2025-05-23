@@ -124,7 +124,7 @@ def predict():
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
     # img = adjust_gamma(img, gamma = 0.8)
-    img = increase_brightness(img, value=5)
+    img = increase_brightness(img, value=10)
     # img = gaussian_blur(img, 3)
 
     img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
@@ -157,10 +157,10 @@ def predict():
     confidence_scores = {}
     thresholds = {
         "mouth": 0.6,
-        "nose": 0.3,
+        "nose": 0.5,
         "skin": 0.7,
-        "left_eye": 0.45,
-        "right_eye": 0.45
+        "left_eye": 0.5,
+        "right_eye": 0.5
     }
 
     feature_notes = {

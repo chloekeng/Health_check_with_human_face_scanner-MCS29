@@ -7,6 +7,8 @@ function retry() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+    console.log("==============test===============")
+    console.log("DOM is loaded")
     // file upload
     const uploadLink = document.getElementById('upload-link');
     const fileInput = document.getElementById('fileUpload');
@@ -14,9 +16,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const popup = document.getElementById('privacy-popup');
     
     if (uploadLink && fileInput) {
+        console.log("Upload link found")
         uploadLink.addEventListener('click', e => {
             e.preventDefault();
             fileInput.click();
+            console.log("Image has been selected")
         });
         fileInput.addEventListener("change", handleFileUpload);
     }
@@ -30,25 +34,29 @@ document.addEventListener('DOMContentLoaded', function() {
 
         cameraButton.addEventListener('click', () => {
             if (!isCameraActive) {
+                console.log("Activating camera ")
                 navigator.mediaDevices.getUserMedia({video: true})
                 .then(s => {
                     stream = s;
+                    console.log("Camera stream received")
                     video.srcObject = s;
                     video.style.display = 'block';
                     overlayText.style.display = 'none';
                     isCameraActive = true;
                 })
                 .catch(err => {
-                    console.error("Error accessing camera", error);
+                    console.error("Error accessing camera", err);
                     alert("Unable to access camera");
                 })
             } else {
+                console.log("Capturing image from video stream")
                 const context = canvas.getContext('2d');
                 canvas.width = video.videoWidth;
                 canvas.height = video.videoHeight;
                 context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
                 stream.getTracks().forEach(t => t.stop());
+                console.log("Video stream stopped")
 
                 video.style.display = 'none';
                 canvas.style.display = 'none';
@@ -56,6 +64,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 overlayText.style.display  = "none";
 
                 canvas.toBlob(blob => {
+                    console.log("Converted canvas to blob")
                     const file = new File([blob], "capture.png", { type: "image/png" });
                     handleFileUpload({ target: { files: [file] } });
                   }, "image/png");
@@ -97,14 +106,6 @@ document.addEventListener('DOMContentLoaded', function() {
         output.innerText = "No prediction available.";
     }
 
-    // votes breakdown
-    // try {
-    //   const votes = JSON.parse(votesStr);
-    //   votesBreak.innerText = `Votes → Sick: ${votes.Sick}, Healthy: ${votes.Healthy}`;
-    // } catch (e) {
-    //   console.warn("Could not parse votes:", e);
-    // }
-    // votes summary
     try {
     const votes = JSON.parse(votesStr);
     const total = votes.Sick + votes.Healthy;
@@ -122,7 +123,6 @@ document.addEventListener('DOMContentLoaded', function() {
     } catch (e) {
     console.warn("Could not parse votes:", e);
     }
-
 
     // per-feature confidences
     try {
@@ -213,21 +213,6 @@ function closePrivacyNotice() {
     const popup = document.getElementById('privacy-popup');
     if (popup) {
         popup.style.display = 'none';
-    }
-}
-
-function showErrorPopup() {
-    const popup = document.getElementById("error-popup");
-    if (popup) {
-        popup.classList.remove("hidden");
-        popup.style.display = 'flex';
-    }
-}
-
-function closeErrorPopup() {
-    const popup = document.getElementById("error-popup");
-    if (popup) {
-        popup.classList.add("hidden");
     }
 }
 
