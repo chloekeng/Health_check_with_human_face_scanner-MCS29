@@ -343,3 +343,15 @@ button {
 .scan-again-button:hover {
   background-color: grey;
 }
+
+/* Summary box containing the prediction + breakdown */
+.summary-box {
+  max-width: 800px;         /* or whatever width suits your layout */
+  margin: 20px auto;        /* centers horizontally and adds vertical space */
+  padding: 1.5rem;          /* inner breathing room */
+  border: 1px solid #ddd;   /* light border */
+  border-radius: 80px;       /* soften the corners */
+  background-color: #fafafa;/* off-white to stand out from the page */
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1); /* subtle depth */
+  text-align: left;         /* ensures contents stay left-aligned */
+}
