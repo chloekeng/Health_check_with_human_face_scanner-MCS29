@@ -195,6 +195,8 @@ def predict():
 
         arr = np.array(Image.open(str(crop)))
         x   = preprocess_array(arr)
+        #here, p is the prediction (float 0 to 1). 
+        #predict() is the method to run data through the model
         p   = float(models[feat].predict(x)[0][0])
         threshold = thresholds.get(feat, 0.5)
         label = "Sick" if p > threshold else "Healthy"
