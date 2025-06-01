@@ -27,6 +27,7 @@ data/extracted/
 !data/plots/**/*.jpg
 !data/plots/**/*.png
 !data/plots/**/.gitkeep
+!md_images/*.png
 # ----------------------------------------
 
 # Checkpoints and model outputs
