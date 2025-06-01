@@ -60,6 +60,8 @@ def make_model(image_size, feature, mcompile=True):
                            name="dense2_" + str(feature)))
     model.add(layers.Dropout(0.1, name="dropout2_" + str(feature)))
 
+    #last layer of cnn which is also the output
+    #sigmoid calculates the final probablity of the model
     model.add(layers.Dense(1, activation='sigmoid',
                            name="dense3_" + str(feature)))
 

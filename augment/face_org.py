@@ -10,7 +10,8 @@ generator for the entire eye region.
 Building upon Shuvrajit9904's work:
 https://github.com/Shuvrajit9904/PairedCycleGAN-tf/blob/master/parse_face.py
 '''
-
+import matplotlib
+matplotlib.use('Agg')
 from imutils import face_utils as futil
 import numpy as np
 import argparse
@@ -97,13 +98,18 @@ def readAndResize(image_path, target_size=512):
 
 
 def exportImage(status, file_name, part_name, img):
-    path_to_exp = "data/parsed/" + status + "/" + file_name + "_" + part_name
+    # path_to_exp = "data/parsed/" + status + "/" + file_name + "_" + part_name
+
+    # 1) ensure output folder exists
+    out_dir = os.path.join("data", "parsed", status)
+    os.makedirs(out_dir, exist_ok=True)
+
+    # 2) build a filename with .png extension
+    path_to_exp = os.path.join(out_dir, f"{file_name}_{part_name}.png")
 
     fig = plt.figure(frameon=False)
-
     plt.axis("off")
-
-    imgplot = plt.imshow(img)
+    plt.imshow(img)
     plt.savefig(path_to_exp, bbox_inches='tight',
                 transparent=True, pad_inches=0)
     plt.close(fig)
@@ -144,12 +150,14 @@ def extractFeatures(img, detector, predictor, dominant_color, status, file_name)
 
             if name == 'left':
                 exportImage(status, file_name, str(name) + "_eye", cv2.cvtColor(
-                    cv2.flip(result_array, 1), cv2.COLOR_BGR2RGB))
+                    result_array, cv2.COLOR_BGR2RGB))
 
+            elif name == 'right':
+                exportImage(status, file_name, str(name) + "_eye", cv2.cvtColor(
+                    result_array, cv2.COLOR_BGR2RGB))
             else:
-                if name == 'right':
-                    exportImage(status, file_name, str(name) + "_eye", cv2.cvtColor(
-                        result_array, cv2.COLOR_BGR2RGB))
+                exportImage(status, file_name, str(name), cv2.cvtColor(
+                    result_array, cv2.COLOR_BGR2RGB))
 
     return shape
 
@@ -233,11 +241,14 @@ def extractFace(path_to_img, status, file_name, faceCascade, detector, predictor
 
     exportImage(status, file_name, "skin",
                 cv2.cvtColor(face_copy, cv2.COLOR_BGR2RGB))
+    
+    # signal “success” back to the caller
+    return True
 
 if __name__ == "__main__":
 
     # for s in ["rug_healthy", "rug_sick", "cfd_healthy", "cfd_sick", "validation_healthy", "validation_sick"]:
-    for s in [ "healthy"]:
+    for s in [ "sick_ai"]:
     # for s in ["healthy_female"]:
 
         print("Scanning ", s, " patients...")

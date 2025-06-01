@@ -31,7 +31,7 @@ data/extracted/
 
 # Checkpoints and model outputs
 augment/output/checkpoints/*
-categorization/model_saves/*
+# categorization/model_saves/*
 
 # Cache and IDE settings
 */__pycache__/*
@@ -43,3 +43,10 @@ categorization/model_saves/*
 
 # ignore virtual environment 
 venv310
+.venv
+<<<<<<< Updated upstream
+venv/*
+!static/images/*
+=======
+venv
+>>>>>>> Stashed changes

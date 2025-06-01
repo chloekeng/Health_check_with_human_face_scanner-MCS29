@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Scan AI</title>
+    <!-- <link rel="stylesheet" href="styles.css"> Link to CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+
+<header>
+    <a href="{{ url_for('home') }}" class="header-link">
+    <img
+      src="{{ url_for('static', filename='images/logo.png') }}"
+      alt="Health Scan AI logo"
+      class="logo-icon"
+    />
+    <span>Health Scan AI</span>
+  </a>
+</header>
+<hr>
+
+<body>
+
+    <div class="info-container">
+        <h1>Are you healthy?</h1>
+        <p class="info-text">Discover your health status in moments. Using advanced facial recognition, our platform analyzes facial features such as skin condition, eyes, and mouth to provide a quick health check. 
+            With just a simple face scan, get quick and non-invasive insights into your current health appearance!</p>
+        <button onclick="startScan()">Start Now</button>
+
+    </div>
+
+    <div class="box"> 
+        <h2 class="box-title">How it works?</h2>
+
+        <div class="step-container">
+            <!-- Step 1 -->
+            <div class="step">
+                <p>1. We scan your face by capturing a photo.</p>
+                <img src="{{ url_for('static', filename='images/face-scan.png') }}" alt="Analyse face">
+            </div>
+
+            <div class="arrow">⟶</div>
+
+            <!-- Step 2 -->
+            <div class="step">
+                <p>2. Our system analyzes symptoms around facial features.</p>
+                <img src="{{ url_for('static', filename='images/face-analysis.png') }}">
+            </div>
+
+            <div class="arrow">⟶</div>
+
+            <!-- Step 3 -->
+            <div class="step">
+                <p>3. You receive instant health insights based on the scan.</p>
+                <img src="{{ url_for('static', filename='images/report.png') }}">
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        function startScan() {
+            // window.location.href = "face-scanningpage.html";
+            window.location.href = "/scan";
+        }
+    </script>
+
+    <!-- <script src="script.js"></script>  -->
+    <!-- <script src="{{ url_for('static', filename='js/script.js') }}"></script> -->
+</body>
+</html>

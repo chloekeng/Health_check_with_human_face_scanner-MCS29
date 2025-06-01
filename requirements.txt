@@ -1,0 +1,13 @@
+Flask
+tensorflow
+Pillow
+flask_cors
+matplotlib
+imutils
+opencv-python
+dlib
+scikit-image
+scikit-learn
+numpy
+seaborn
+pandas

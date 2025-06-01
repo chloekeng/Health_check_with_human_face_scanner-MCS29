@@ -1,0 +1,356 @@
+header {
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    padding: 15px 20px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.header-link {
+    display: inline-flex;
+    justify-content: left;
+    align-items: center;
+    text-decoration: none;
+    font-size: 20px;
+    font-weight: bold;
+    color: inherit; /* keep the same text color */
+}
+
+.header-link .logo-icon {
+  margin-right: 8px;
+}
+
+.logo-icon {
+    width: 32px;
+    height: auto;
+    margin-right: 15px;
+    margin-left: 20px;
+}
+
+hr {
+    border: none;
+    height: 1px;
+    background-color: black;
+    width: 100%; 
+    margin: 0;
+}
+
+h1 {
+    font-size: clamp(2rem, 5vw, 3rem); /* Dynamic size */
+}
+
+p {
+    font-size: clamp(1rem, 2vw, 1.3rem);
+}
+
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    /* padding: 50px; */
+    margin: 0;
+    background-color: #f4f4f4;
+    padding: 0;
+}
+
+.info-container {
+    /* max-width: 1200px; */
+    /* margin: auto;
+    width: 80%; */
+    margin: 5%;
+    align-items: center;
+}
+
+.info-text {
+    display: flex;
+    text-align: center;
+    max-width: 1000px;
+    min-height: 100px;
+    margin: auto;
+}
+
+button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: clamp(1rem, 1.5vw, 1.8rem);
+    background-color: black;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 30px;
+}
+
+.box{
+    margin: 5%;
+    /* display: flex; */
+    max-height: 300px;
+    background-color: lightgray;
+    text-align: center;
+    border-radius: 20px;
+    /* flex-direction: column;
+    align-items: flex-start; */
+}
+
+.box img {
+    max-width: 100%;     /* Shrinks image if too wide */
+    max-height: 100%;    /* Shrinks image to fit box height */
+    object-fit: contain; /* Keeps image proportions */
+    display: block;
+    margin: 0 auto;
+}
+
+.box-title {
+    /* margin-bottom: 10px; */
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    padding: 15px 30px;
+}
+
+/* Flexbox to arrange steps in a row */
+.step-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-top: -30px;  /*to be changed*/
+    gap: 20px;
+}
+
+/* For step 1,2,3 */
+.step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 200px;
+}
+
+.step img {
+    width: 80px;
+    margin-bottom: 30px;
+}
+
+.arrow {
+    font-size: 70px;
+    font-weight: bold;
+    color: black;
+}
+
+/* face scanning page */
+.popup-box {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    /* dim the background behind the popup */
+    background: rgba(0, 0, 0, 0.4);
+}
+
+/* Content box */
+.popup-content {
+    background: #f7f7f7; /* slightly off-white */
+    padding: 30px;
+    border-radius: 12px;
+    text-align: center;
+    width: 70%;
+    max-width: 500px;
+    position: relative;
+    /* subtle shadow for depth */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+#error-popup {
+    position: fixed;
+    align-items: center;
+}
+
+/* I Accept button */
+.close-button {
+  position: absolute;
+  bottom: 20px;        /* distance from bottom of the container */
+  left: 50%;           /* start at 50% across */
+  transform: translateX(-50%); /* pull back half its own width */
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.face-scan-container{
+    margin: 2% auto;
+    display: flex;
+    max-width: 50%;
+    max-height: 100%;
+    background-color: lightgray;
+    text-align: center;
+    border-radius: 20px;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Flexbox to arrange steps in a row */
+.oval-container {
+    position: relative;
+    width: 450px;
+    height: 500px;
+    display: flex;
+    /* justify-content: center; */
+    align-items: center;
+}
+
+#camera-activate {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    display: none;
+}
+
+#oval-image {
+    z-index: 2;
+    max-width: 100%;
+    max-height: 90%;
+    width: auto;
+    height: auto;
+    /* object-fit: contain; */
+    position: absolute;
+}
+
+.overlay-text {
+    position: absolute;
+    color: white;
+    /* bottom: 0%; */
+    width: 100%;
+    /* font-weight: bold; */
+    /* font-size: 1rem; */
+    text-align: center;
+    z-index: 3;
+}
+
+.camera-button {
+    /* border: none; */
+    display: flex;
+    background-color: lightgray;
+    justify-content: center;
+    align-items: center;
+    margin: 20px auto;
+    padding: 1%;
+    border-radius: 50%;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.camera-button img {
+    width: 50px; /* Adjust icon size */
+    height: 50px;
+}
+
+.here-link {
+    color: blue;
+    text-decoration: underline;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font: inherit;
+}
+
+/* analysing style */
+.analyzing-container {
+    margin-top: 20%;
+    text-align: center;
+}
+
+.loader {
+    border: 10px solid #f3f3f3; /* Light grey background */
+    border-top: 10px solid black; /* Black spinning part */
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    animation: spin 1s linear infinite;
+    margin: 40px auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* result page */
+.result-container {
+    margin: 5%;
+    align-items: center;
+    text-align: left;
+}
+
+.result {
+    font-size: 2.5rem;
+    margin: 0.2rem 0 2rem;
+    text-align: center;
+}
+
+#prediction-output {
+    text-align: center;
+}
+
+.healthy {
+    color: green;
+}
+.sick {
+  color: red;
+}
+
+.hidden {
+    display: none;
+}
+
+#advice-section {
+    margin-top: 2rem;
+}
+
+/* advice card styling */
+.advice-section {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+#notes-list li {
+    margin-bottom: 0.75rem;
+}
+
+.scan-again-wrapper {
+  text-align: center;
+  /* 2rem above, 5rem below */
+  margin: 2rem auto 5rem auto;
+}
+
+.scan-again-button {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  border-radius: 100px;
+  border: none;
+  background-color: #000000;
+  color: white;
+  cursor: pointer;
+}
+
+.scan-again-button:hover {
+  background-color: grey;
+}
+
+/* Summary box containing the prediction + breakdown */
+.summary-box {
+  max-width: 800px;         /* or whatever width suits your layout */
+  margin: 20px auto;        /* centers horizontally and adds vertical space */
+  padding: 1.5rem;          /* inner breathing room */
+  border: 1px solid #ddd;   /* light border */
+  border-radius: 80px;       /* soften the corners */
+  background-color: #fafafa;/* off-white to stand out from the page */
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1); /* subtle depth */
+  text-align: left;         /* ensures contents stay left-aligned */
+}

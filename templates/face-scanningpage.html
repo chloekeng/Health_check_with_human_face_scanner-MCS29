@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Face Scan</title>
+    <!-- <link rel="stylesheet" href="styles.css"> Link to CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<header>
+  <a href="{{ url_for('home') }}" class="header-link">
+    <img
+      src="{{ url_for('static', filename='images/logo.png') }}"
+      alt="Health Scan AI logo"
+      class="logo-icon"
+    />
+    <span>Health Scan AI</span>
+  </a>
+</header>
+<hr>    
+<body>
+    
+
+    <!-- Popup wrapper (flex centering container) -->
+    <div id="privacy-popup" class="popup-box">
+        <!-- The light-grey content card -->
+        <div class="popup-content" style="background-color: #f0f0f0;">
+            <p style="color: #4a4a4a;">
+            Your privacy is our top priority. The images captured are used solely
+            for health analysis and are not stored or shared without your consent.
+            All images are immediately deleted after processing. 
+            </p>
+            <button class="close-button-bottom" onclick="closePrivacyNotice()">
+            I Accept
+            </button>
+        </div>
+    </div>
+
+
+    <div class="face-scan-container">
+        <div class="oval-container">
+            <!-- for live webcam feed -->
+            <video id="camera-activate" autoplay playsinline style="display: none;"></video>
+            <!-- <img id="oval-image" src="images/oval_ver_1.png" alt="Analyse face"> -->
+            <img id="oval-image" src="{{ url_for('static', filename='images/oval_ver_1.png') }}" alt="Analyse face">
+            <p  id="overlay-text" class="overlay-text">Place your face in the oval</p>
+        </div>
+    </div>
+
+    <p><i>take off your glasses or masks or hair or anything that might cover your face</i></p>
+
+    <button id="camera-button" class="camera-button">
+        <img src="{{ url_for('static', filename='images/cam.png') }}" alt="Camera">
+    </button>
+
+    <input type="file" id="fileUpload" style="display: none;">
+    
+    <p><strong>Or upload your recent face photo 
+        <a href="#" id="upload-link" class="here-link"> here </a>
+        </strong>
+    </p>
+
+    <canvas id="photo-canvas" style="display: none;"></canvas>
+
+    <div id="error-popup" class="popup-box hidden">
+        <div class="popup-content">
+            <h2>Error detecting face</h2>
+            <p>Please ensure your face is clearly visible, facing forward, and well-lit. Try again with another image.</p>
+            <span class="close-button" onclick="retry()">×</span>
+        </div>
+    </div>
+
+    <!-- <div id="preview-container">
+        <img id="preview-image" style="display: none; max-width: 200px; margin-top: 20px;">
+    </div> -->
+    
+
+    <!-- <script src="script.js"></script> -->
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
