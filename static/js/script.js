@@ -3,13 +3,24 @@ function retry() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    console.log("==============test===============")
-    console.log("DOM is loaded")
+    initializeFileUpload();
+    initializeCameraCapture();
+    initializePrivacyPopup();
+    initializeResultSection();
+});
+
+
+function closePrivacyNotice() {
+    const popup = document.getElementById('privacy-popup');
+    if (popup) {
+        popup.style.display = 'none';
+    }
+}
+
+function initializeFileUpload() {
     // file upload
     const uploadLink = document.getElementById('upload-link');
     const fileInput = document.getElementById('fileUpload');
-    const cameraButton = document.getElementById('camera-button');
-    const popup = document.getElementById('privacy-popup');
     
     if (uploadLink && fileInput) {
         console.log("Upload link found")
@@ -20,7 +31,85 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         fileInput.addEventListener("change", handleFileUpload);
     }
+}
 
+function handleFileUpload(e) {
+    // Clear out any old prediction data
+    sessionStorage.clear();
+    const file = e.target.files[0]
+    if (!file) return;
+
+    if (!["image/jpeg", "image/png"].includes(file.type)) {
+        alert("Please upload a JPEG or PNG image.");
+        e.target.value = "";
+        return;
+    }
+
+    //remove scan container & show loader in place
+    document.querySelector(".face-scan-container")?.remove();
+    document.getElementById("privacy-popup")?.remove();
+    document.querySelectorAll('body > p').forEach(el => el.remove());
+    document.getElementById("camera-button")?.remove();
+
+    const loader = document.createElement("div")
+    loader.className = "analyzing-container";
+    loader.innerHTML = `
+        <div class="loader"></div>
+        <h1>AI analysing...</h1>
+        <p>It will take some time...</p>`;
+    document.body.appendChild(loader)
+
+    const data = new FormData();
+    data.append("file", file);
+
+    fetch("/predict", {
+        method: "POST",
+        body: data
+        })
+        .then(async res => {
+            const payload = await res.json().catch(() => ({}));
+            if (!res.ok) {
+            // server‐sent JSON “error” field or a fallback
+            throw new Error(payload.error || `${res.status} ${res.statusText}`);
+            }
+            return payload;
+        })
+        .then(json => {
+            // stash & go to results
+            sessionStorage.setItem("predictionResult",     json.result);
+            sessionStorage.setItem("predictionConfidence", json.confidence);
+            sessionStorage.setItem("votes",                JSON.stringify(json.votes));
+            sessionStorage.setItem("confidences",          JSON.stringify(json.confidences));
+            sessionStorage.setItem("notes",                JSON.stringify(json.notes));
+            sessionStorage.setItem("featureLabels",       JSON.stringify(json.feature_labels)); // <<< NEW
+            sessionStorage.setItem("boxes",                JSON.stringify(json.boxes));
+            sessionStorage.setItem("uploadedFilename",     json.uploadedFilename || "capture.png");
+            window.location.href = "/result";
+        })
+        .catch(err => {
+    console.error("Prediction error:", err);
+    const msg = err.message || "Something went wrong.";
+
+    if (msg === "No face detected") {
+        // no face‐detection alert + redirect
+        alert("No face detected. Please hold your face clearly in frame, ensure proper lighting and try again.");
+        window.location.href = "/scan";
+
+    } else if (msg.includes("Unsupported image format")) {
+        // handles HEIC or any cv2.imread failure
+        alert("Unsupported image format. Please upload a JPEG or PNG image.");
+        window.location.href = "/scan";
+
+    } else {
+        // any other error just shows its message
+        alert(msg);
+    }
+    });
+
+}
+
+function initializeCameraCapture() {
+    const cameraButton = document.getElementById('camera-button');
     // camera activate & capture
     if (cameraButton) {
         const video = document.getElementById('camera-activate');
@@ -54,11 +143,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 stream.getTracks().forEach(t => t.stop());
                 console.log("Video stream stopped")
 
+                // stop video stream
                 video.style.display = 'none';
                 canvas.style.display = 'none';
                 cameraButton.style.display = 'none';
                 overlayText.style.display  = "none";
 
+                // Convert canvas to a File and call handleFileUpload
                 canvas.toBlob(blob => {
                     console.log("Converted canvas to blob")
                     const file = new File([blob], "capture.png", { type: "image/png" });
@@ -67,13 +158,20 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         })
     }
+}
+
+function initializePrivacyPopup() {
+    const popup = document.getElementById('privacy-popup');
+    if (!popup) return;
 
     setTimeout(() => {
         if (popup) {
             popup.style.display = 'flex';
         }
     }, 700);
+}
 
+function initializeResultSection() {
     //==============result section================
     const output     = document.getElementById("prediction-output");
     const votesBreak = document.getElementById("vote-breakdown");
@@ -89,7 +187,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const votesStr  = sessionStorage.getItem("votes")       || "{}";
     const confsStr  = sessionStorage.getItem("confidences") || "{}";
     const notesStr  = sessionStorage.getItem("notes")       || "[]";
-
 
     // render final line
     if (result == "Healthy") {
@@ -203,89 +300,4 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
   };
-});
-
-
-function closePrivacyNotice() {
-    const popup = document.getElementById('privacy-popup');
-    if (popup) {
-        popup.style.display = 'none';
-    }
 }
-
-
-function handleFileUpload(e) {
-    // Clear out any old prediction data
-    sessionStorage.clear();
-    const file = e.target.files[0]
-    if (!file) return;
-
-    if (!["image/jpeg", "image/png"].includes(file.type)) {
-        alert("Please upload a JPEG or PNG image.");
-        e.target.value = "";
-        return;
-    }
-
-    //remove scan container & show loader in place
-    document.querySelector(".face-scan-container").remove();
-    document.getElementById("privacy-popup")?.remove();
-    document.querySelectorAll('body > p').forEach(el => el.remove());
-    document.getElementById("camera-button")?.remove();
-
-    const loader = document.createElement("div")
-    loader.className = "analyzing-container";
-    loader.innerHTML = `
-        <div class="loader"></div>
-        <h1>AI analysing...</h1>
-        <p>It will take some time...</p>`;
-    document.body.appendChild(loader)
-
-    const data = new FormData();
-    data.append("file", file);
-
-    fetch("/predict", {
-        method: "POST",
-        body: data
-        })
-        .then(async res => {
-            const payload = await res.json().catch(() => ({}));
-            if (!res.ok) {
-            // server‐sent JSON “error” field or a fallback
-            throw new Error(payload.error || `${res.status} ${res.statusText}`);
-            }
-            return payload;
-        })
-        .then(json => {
-            // stash & go to results
-            sessionStorage.setItem("predictionResult",     json.result);
-            sessionStorage.setItem("predictionConfidence", json.confidence);
-            sessionStorage.setItem("votes",                JSON.stringify(json.votes));
-            sessionStorage.setItem("confidences",          JSON.stringify(json.confidences));
-            sessionStorage.setItem("notes",                JSON.stringify(json.notes));
-            sessionStorage.setItem("featureLabels",       JSON.stringify(json.feature_labels)); // <<< NEW
-            sessionStorage.setItem("boxes",                JSON.stringify(json.boxes));
-            sessionStorage.setItem("uploadedFilename",     json.uploadedFilename || "capture.png");
-            window.location.href = "/result";
-        })
-        .catch(err => {
-    console.error("Prediction error:", err);
-    const msg = err.message || "Something went wrong.";
-
-    if (msg === "No face detected") {
-        // no face‐detection alert + redirect
-        alert("No face detected. Please hold your face clearly in frame, ensure proper lighting and try again.");
-        window.location.href = "/scan";
-
-    } else if (msg.includes("Unsupported image format")) {
-        // handles HEIC or any cv2.imread failure
-        alert("Unsupported image format. Please upload a JPEG or PNG image.");
-        window.location.href = "/scan";
-
-    } else {
-        // any other error just shows its message
-        alert(msg);
-    }
-    });
-
-}
-
