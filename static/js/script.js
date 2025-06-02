@@ -11,6 +11,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 function closePrivacyNotice() {
+    /**
+     * Hide the privacy notice popup
+     */
     const popup = document.getElementById('privacy-popup');
     if (popup) {
         popup.style.display = 'none';
@@ -18,7 +21,11 @@ function closePrivacyNotice() {
 }
 
 function initializeFileUpload() {
-    // file upload
+    /**
+     * Initialise file upload, find upload image link and hidden file input.
+     * When the user clicks the link, preventDefault and programmatically trigger a click on the file input. Then, listen for
+     * change events on that file input and call handleFileUpload().
+     */
     const uploadLink = document.getElementById('upload-link');
     const fileInput = document.getElementById('fileUpload');
     
@@ -34,6 +41,12 @@ function initializeFileUpload() {
 }
 
 function handleFileUpload(e) {
+    /**
+     * Handle a change event from a file input. 
+     * Validates that file is JPEG or PNG
+     * If valid, it destroys the “scanning” UI, shows a loader, and sends the file to `/predict`
+     * Store all prediction data in sessionStorage and redirect to result page
+     */
     // Clear out any old prediction data
     sessionStorage.clear();
     const file = e.target.files[0]
@@ -109,6 +122,11 @@ function handleFileUpload(e) {
 }
 
 function initializeCameraCapture() {
+    /**
+     * Finds camera activation button. When clicked, this toggles betwene activate camera and capture from camera
+     * On first click, it will show live video element
+     * On second click, stop the stream and capture the image
+     */
     const cameraButton = document.getElementById('camera-button');
     // camera activate & capture
     if (cameraButton) {
@@ -161,6 +179,9 @@ function initializeCameraCapture() {
 }
 
 function initializePrivacyPopup() {
+    /**
+     * Wait 700ms then display privacy popup
+     */
     const popup = document.getElementById('privacy-popup');
     if (!popup) return;
 
@@ -172,7 +193,14 @@ function initializePrivacyPopup() {
 }
 
 function initializeResultSection() {
-    //==============result section================
+    /**
+     * Reads prediction data from sessionStorage and populate the DOM
+     *  1. Show healthy v sick message
+     *  2. Build vote breakdown text (how many areas flagged)
+     *  3. List each feature confidence percentage
+     *  4. Render any advice notes 
+     *  5. Draw bounding boxes + confidence score
+     */
     const output     = document.getElementById("prediction-output");
     const votesBreak = document.getElementById("vote-breakdown");
     const ul         = document.getElementById("confidence-list");
