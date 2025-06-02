@@ -1,7 +1,3 @@
-function startScan() {
-    window.location.href = "/scan";
-}
-
 function retry() {
     window.location.href = "/scan";
 }
@@ -165,9 +161,10 @@ document.addEventListener('DOMContentLoaded', function() {
             notesList.appendChild(li);
         }) 
     }
+
     // ── debug log ──
-    console.log("📦 boxes:", JSON.parse(sessionStorage.getItem("boxes")||"{}"));
-    console.log("🏷 labels:", JSON.parse(sessionStorage.getItem("featureLabels")||"{}"));
+    console.log("boxes:", JSON.parse(sessionStorage.getItem("boxes")||"{}"));
+    console.log("labels:", JSON.parse(sessionStorage.getItem("featureLabels")||"{}"));
 
     // ── annotation ──
     const canvas = document.getElementById("annotation-canvas");
@@ -218,7 +215,7 @@ function closePrivacyNotice() {
 
 
 function handleFileUpload(e) {
-    // ◀︎ Clear out any old prediction data
+    // Clear out any old prediction data
     sessionStorage.clear();
     const file = e.target.files[0]
     if (!file) return;

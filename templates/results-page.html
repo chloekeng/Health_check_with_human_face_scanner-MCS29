@@ -12,8 +12,7 @@
     <img
       src="{{ url_for('static', filename='images/logo.png') }}"
       alt="Health Scan AI logo"
-      class="logo-icon"
-    />
+      class="logo-icon"/>
     <span>Health Scan AI</span>
   </a>
   </header>
@@ -27,11 +26,7 @@
             style="display:block; margin: 0 auto; max-width:100%; border:1px solid #ccc;"></canvas>
 
     <h1 id="prediction-output">You are …</h1>
-    
-    <!-- <p id="vote-breakdown"></p>
-    <ul id="confidence-list"></ul> -->
 
-    
     <div class="summary-box">
       <p id="vote-breakdown"></p>
       <ul id="confidence-list"></ul>
@@ -41,7 +36,6 @@
     </div>
     </div>
   
-
       <!-- Scan Again button -->
     <div style="text-align:center; margin-top: 20px;">
       <button onclick="window.location.href='/scan'" class="scan-again-button">
@@ -49,7 +43,6 @@
       </button>
     </div>
 </div>
-  <!-- your existing logic lives here -->
   <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>

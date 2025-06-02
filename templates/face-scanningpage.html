@@ -7,6 +7,7 @@
     <!-- <link rel="stylesheet" href="styles.css"> Link to CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
+
 <header>
   <a href="{{ url_for('home') }}" class="header-link">
     <img
@@ -20,7 +21,6 @@
 <hr>    
 <body>
     
-
     <!-- Popup wrapper (flex centering container) -->
     <div id="privacy-popup" class="popup-box">
         <!-- The light-grey content card -->
@@ -36,12 +36,10 @@
         </div>
     </div>
 
-
     <div class="face-scan-container">
         <div class="oval-container">
             <!-- for live webcam feed -->
             <video id="camera-activate" autoplay playsinline style="display: none;"></video>
-            <!-- <img id="oval-image" src="images/oval_ver_1.png" alt="Analyse face"> -->
             <img id="oval-image" src="{{ url_for('static', filename='images/oval_ver_1.png') }}" alt="Analyse face">
             <p  id="overlay-text" class="overlay-text">Place your face in the oval</p>
         </div>
@@ -55,7 +53,8 @@
 
     <input type="file" id="fileUpload" style="display: none;">
     
-    <p><strong>Or upload your recent face photo 
+    <p>
+        <strong>Or upload your recent face photo 
         <a href="#" id="upload-link" class="here-link"> here </a>
         </strong>
     </p>
@@ -70,12 +69,6 @@
         </div>
     </div>
 
-    <!-- <div id="preview-container">
-        <img id="preview-image" style="display: none; max-width: 200px; margin-top: 20px;">
-    </div> -->
-    
-
-    <!-- <script src="script.js"></script> -->
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>

@@ -4,30 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Analysing...</title>
-    <!-- <link rel="stylesheet" href="styles.css"> reuse same CSS file -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
+
 <body>
+
     <div class="analyzing-container">
         <div class="loader"></div>
         <h1>AI analysing...</h1>
         <p>It will take some time...</p>
     </div>
 
-    <!-- <script>
-        // Animate the loading bar
-        const loadingFill = document.querySelector('.loading-fill');
-        let width = 0;
-        const interval = setInterval(() => {
-            if (width >= 100) {
-                clearInterval(interval);
-                // Optional: after loading complete, move to result page
-            } else {
-                width++;
-                loadingFill.style.width = width + '%';
-            }
-        }, 50); // Speed of loading
-    </script> -->
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>

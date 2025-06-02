@@ -45,17 +45,8 @@ for feature in face_features:
 
     print(f"[INFO] Loading {feature} model from → {best_checkpoint}")
     models[feature] = tf.keras.models.load_model(best_checkpoint, compile=False)
-    # try:
-    #     models[feature] = tf.keras.models.load_model(model_path, compile=False)
-    #     print(f"[INFO] Loaded model for {feature}")
-    # except Exception as e:
-    #     print(f"[ERROR] Could not load model for {feature}: {e}")
 
-def preprocess_image(file, size=128):
-    img = Image.open(file).convert("RGB").resize((size, size))
-    img_array = np.array(img) / 255.0
-    return np.expand_dims(img_array, axis=0)
-
+#web pages
 @app.route("/")
 def home():
     return render_template("index.html")
